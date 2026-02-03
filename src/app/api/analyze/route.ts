@@ -3,6 +3,9 @@ import { analyzeResumeWithGemini } from "@/lib/gemini";
 const pdf = require("pdf-parse");
 import mammoth from "mammoth";
 
+// Force dynamic to prevent build-time evaluation
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
     try {
         const formData = await req.formData();
