@@ -137,10 +137,10 @@ export default function Home() {
 
           <div className="flex items-center gap-4">
             <SignedOut>
-              <SignInButton mode="modal">
+              <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                 <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50">Sign In</Button>
               </SignInButton>
-              <SignInButton mode="modal">
+              <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                 <Button className="bg-teal-500/10 text-teal-300 border border-teal-500/20 hover:bg-teal-500/20 rounded-full">Get Started</Button>
               </SignInButton>
             </SignedOut>
