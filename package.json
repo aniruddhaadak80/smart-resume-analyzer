@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.37.1",
     "@google/genai": "^1.0.0",
     "@gsap/react": "^2.1.2",
     "@radix-ui/react-label": "^2.1.8",

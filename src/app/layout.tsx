@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -31,13 +32,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${outfit.variable} ${spaceGrotesk.variable} font-sans antialiased`}
-        suppressHydrationWarning
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${outfit.variable} ${spaceGrotesk.variable} font-sans antialiased`}
+          suppressHydrationWarning
+        >
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

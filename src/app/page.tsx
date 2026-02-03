@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Github, Twitter, Linkedin } from "lucide-react";
 import Image from "next/image";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 import { Variants } from "framer-motion";
 
@@ -111,13 +112,34 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-4 md:px-8 relative z-10 pb-20">
 
         {/* Navbar / Logo Area */}
-        <header className="py-8 flex justify-center md:justify-start">
+        <header className="py-8 flex justify-between items-center">
           <a href="/" className="flex items-center gap-3 cursor-pointer group">
             <div className="relative w-10 h-10 group-hover:scale-105 transition-transform">
               <Image src="/logo.png" alt="Logo" fill className="object-contain" />
             </div>
             <span className="text-xl font-bold font-display tracking-tight group-hover:text-teal-100 transition-colors">career<span className="text-teal-400">zen</span></span>
           </a>
+
+          <div className="flex items-center gap-4">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50">Sign In</Button>
+              </SignInButton>
+              <SignInButton mode="modal">
+                <Button className="bg-teal-500/10 text-teal-300 border border-teal-500/20 hover:bg-teal-500/20 rounded-full">Get Started</Button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-slate-400 hidden md:inline-block">Welcome back!</span>
+                <UserButton afterSignOutUrl="/" appearance={{
+                  elements: {
+                    avatarBox: "w-10 h-10 ring-2 ring-teal-500/20"
+                  }
+                }} />
+              </div>
+            </SignedIn>
+          </div>
         </header>
 
         {/* Hero Section */}
