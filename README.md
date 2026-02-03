@@ -1,4 +1,4 @@
-# careerzen 🧘‍♂️🚀
+# careerzen 🧘‍♂️
 
 > **AI-Powered Resume Optimization & Interview Prep**
 
@@ -74,4 +74,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-© 2026 Aniruddha. Built with ❤️ and AI.
+© 2026 careerzen. Built with ❤️ and AI.
