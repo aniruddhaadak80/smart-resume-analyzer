@@ -392,17 +392,17 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950 relative z-20 py-12">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col gap-4 items-center md:items-start">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+
+          {/* Left: Logo */}
+          <div className="flex justify-center md:justify-start">
             <a href="/" className="flex items-center gap-2 cursor-pointer group">
               <div className="relative w-8 h-8 opacity-80 group-hover:opacity-100 transition-opacity"><Image src="/logo.png" alt="logo" fill className="object-contain" /></div>
               <span className="font-bold text-slate-500 group-hover:text-slate-300 transition-colors">careerzen</span>
             </a>
-            <div className="text-sm text-slate-600">
-              © 2026 careerzen. All rights reserved.
-            </div>
           </div>
 
+          {/* Center: Social Icons */}
           <div className="flex flex-wrap justify-center gap-6 text-slate-500">
             <a href="https://www.linkedin.com/in/aniruddha-adak" target="_blank" rel="noopener noreferrer" title="LinkedIn"><Linkedin className="h-5 w-5 hover:text-white transition-colors" /></a>
             <a href="https://github.com/aniruddhaadak80" target="_blank" rel="noopener noreferrer" title="GitHub"><Github className="h-5 w-5 hover:text-white transition-colors" /></a>
@@ -414,6 +414,12 @@ export default function Home() {
             <a href="https://t.me/aniruddhaadak" target="_blank" rel="noopener noreferrer" title="Telegram"><Send className="h-5 w-5 hover:text-white transition-colors" /></a>
             <a href="https://linktr.ee/aniruddha.adak" target="_blank" rel="noopener noreferrer" title="Linktree"><LinkIcon className="h-5 w-5 hover:text-white transition-colors" /></a>
           </div>
+
+          {/* Right: Copyright */}
+          <div className="text-sm text-slate-600 text-center md:text-right">
+            © 2026 careerzen. All rights reserved.
+          </div>
+
         </div>
       </footer>
 
