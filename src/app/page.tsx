@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
   const containerRef = useRef(null);
@@ -94,12 +95,20 @@ export default function Home() {
       <div className="max-w-5xl mx-auto space-y-20 relative z-10 pb-20">
 
         {/* Hero Section */}
-        <section className="text-center space-y-6 pt-10">
+        <section className="text-center space-y-6 pt-10 flex flex-col items-center">
+          <div className="relative w-24 h-24 mb-4 hero-text">
+            <Image
+              src="/logo.png"
+              alt="careerzen logo"
+              fill
+              className="object-contain"
+            />
+          </div>
           <Badge variant="secondary" className="hero-text bg-indigo-500/10 text-indigo-300 border-indigo-500/20 px-4 py-1 text-sm rounded-full mb-4">
             ✨ AI-Powered V2.0 Now Live
           </Badge>
-          <h1 className="hero-text text-5xl md:text-7xl font-bold tracking-tighter leading-tight font-display">
-            Smart <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Resume</span> Analyzer
+          <h1 className="hero-text text-5xl md:text-7xl font-bold tracking-tighter leading-tight font-display mb-2">
+            career<span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-indigo-400">zen</span>
           </h1>
           <p className="hero-text text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             Optimize your resume for any job description using advanced Gemini AI.

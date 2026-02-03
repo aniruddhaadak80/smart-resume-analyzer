@@ -15,12 +15,12 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Smart Resume Analyzer | AI-Powered Career Optimization",
-  description: "Optimize your resume for any job description using Google Gemini AI. Get instant feedback on ATS score, missing keywords, and improvement suggestions.",
-  keywords: ["resume analyzer", "ATS score", "AI resume", "career tools", "job application", "Gemini AI"],
+  title: "careerzen | AI-Powered Resume & Interview Coach",
+  description: "careerzen helps you land your dream job with AI-powered resume analysis and interview prep. Get instant ATS feedback and tailored interview questions.",
+  keywords: ["resume analyzer", "careerzen", "ATS score", "AI resume", "career tools", "job application", "Gemini AI"],
   authors: [{ name: "Aniruddha" }],
   icons: {
-    icon: "/favicon.ico",
+    icon: "/logo.png",
   },
 };
 
