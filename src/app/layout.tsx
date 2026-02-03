@@ -18,8 +18,11 @@ export const metadata: Metadata = {
   title: "careerzen | AI-Powered Resume & Interview Coach",
   description: "careerzen helps you land your dream job with AI-powered resume analysis and interview prep. Get instant ATS feedback and tailored interview questions.",
   keywords: ["resume analyzer", "careerzen", "ATS score", "AI resume", "career tools", "job application", "Gemini AI"],
-  authors: [{ name: "Aniruddha" }],
-
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({
