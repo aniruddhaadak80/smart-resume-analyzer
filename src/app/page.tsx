@@ -103,7 +103,7 @@ export default function Home() {
           initial="hidden"
           animate="visible"
           variants={staggerContainer}
-          className="text-center space-y-8 pt-10 pb-20"
+          className="text-center space-y-8 pt-10 pb-20 min-h-[80vh] flex flex-col justify-center items-center"
         >
           <motion.div variants={fadeInUp} className="inline-block">
             <Badge variant="secondary" className="bg-teal-950/50 text-teal-300 border-teal-500/20 px-4 py-1.5 text-sm rounded-full backdrop-blur-md">
@@ -118,196 +118,213 @@ export default function Home() {
             </span>
           </motion.h1>
 
-          <motion.p variants={fadeInUp} className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <motion.p variants={fadeInUp} className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed italic font-light">
             Upload your resume and get instant, AI-driven feedback to beat the ATS and impress recruiters. Tailored interview prep included.
           </motion.p>
+
+          <motion.div variants={fadeInUp} className="pt-4">
+            <Button
+              onClick={() => document.getElementById('analysis-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="rounded-full px-8 py-6 text-lg bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10 transition-all hover:scale-105"
+            >
+              Start Free Analysis <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </motion.div>
         </motion.section>
 
         {/* Main Interface */}
-        <AnimatePresence mode="wait">
-          {!result ? (
-            <motion.div
-              key="upload"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-              transition={{ duration: 0.5 }}
-              className="space-y-24"
-            >
-              {/* Upload Card */}
-              <Card className="glass-card border-slate-800 bg-slate-900/60 backdrop-blur-2xl max-w-4xl mx-auto overflow-hidden">
-                {/* Progress Bar Loader */}
-                {loading && <motion.div layoutId="loader" className="h-1 bg-gradient-to-r from-teal-500 to-cyan-500 absolute top-0 left-0 w-full" initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 2, repeat: Infinity }} />}
+        <div id="analysis-section" className="scroll-mt-24">
+          <AnimatePresence mode="wait">
+            {!result ? (
+              <motion.div
+                key="upload"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.5 }}
+                className="space-y-24"
+              >
+                {/* Upload Card */}
+                <Card className="glass-card border-slate-800 bg-slate-900/60 backdrop-blur-2xl max-w-4xl mx-auto overflow-hidden">
+                  {/* Progress Bar Loader */}
+                  {loading && <motion.div layoutId="loader" className="h-1 bg-gradient-to-r from-teal-500 to-cyan-500 absolute top-0 left-0 w-full" initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 2, repeat: Infinity }} />}
 
-                <CardHeader className="text-center pb-10 pt-10">
-                  <CardTitle className="text-3xl font-display">Start Analysis</CardTitle>
-                  <CardDescription className="text-slate-400 text-lg">Process your resume in seconds.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-8 px-8 pb-10">
-                  <div className="grid md:grid-cols-2 gap-8">
-                    {/* Dropzone */}
-                    <div className="space-y-3 group">
-                      <Label className="text-base font-medium text-slate-300">Resume File <span className="text-teal-400">*</span></Label>
-                      <div className="border-2 border-dashed border-slate-700/50 rounded-2xl p-8 text-center bg-slate-900/40 hover:bg-slate-800/60 hover:border-teal-500/50 transition-all cursor-pointer relative h-[220px] flex flex-col items-center justify-center group-hover:shadow-[0_0_20px_rgba(20,184,166,0.1)]">
-                        <input type="file" accept=".pdf,.docx" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
-                        <div className="flex flex-col items-center gap-4 transition-transform group-hover:-translate-y-1">
-                          {file ? (
-                            <>
-                              <div className="bg-teal-500/20 p-4 rounded-full ring-1 ring-teal-500/50">
-                                <FileText className="h-8 w-8 text-teal-400" />
-                              </div>
-                              <div className="text-center">
-                                <p className="font-medium text-slate-200 text-lg">{file.name}</p>
-                                <p className="text-sm text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="bg-slate-800 p-4 rounded-full group-hover:bg-slate-700 transition-colors">
-                                <UploadCloud className="h-8 w-8 text-slate-400 group-hover:text-teal-400 transition-colors" />
-                              </div>
-                              <div>
-                                <p className="font-medium text-slate-300 text-lg">Click to Upload</p>
-                                <p className="text-sm text-slate-500 mt-1">PDF or DOCX</p>
-                              </div>
-                            </>
-                          )}
+                  <CardHeader className="text-center pb-10 pt-10">
+                    <CardTitle className="text-3xl font-display">Start Analysis</CardTitle>
+                    <CardDescription className="text-slate-400 text-lg italic">Process your resume in seconds.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-8 px-8 pb-10">
+                    <div className="grid md:grid-cols-2 gap-8">
+                      {/* Dropzone */}
+                      <div className="space-y-3 group">
+                        <Label className="text-base font-medium text-slate-300">Resume File <span className="text-teal-400">*</span></Label>
+                        <div className="border-2 border-dashed border-slate-700/50 rounded-2xl p-8 text-center bg-slate-900/40 hover:bg-slate-800/60 hover:border-teal-500/50 transition-all cursor-pointer relative h-[220px] flex flex-col items-center justify-center group-hover:shadow-[0_0_20px_rgba(20,184,166,0.1)]">
+                          <input type="file" accept=".pdf,.docx" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
+                          <div className="flex flex-col items-center gap-4 transition-transform group-hover:-translate-y-1">
+                            {file ? (
+                              <>
+                                <div className="bg-teal-500/20 p-4 rounded-full ring-1 ring-teal-500/50">
+                                  <FileText className="h-8 w-8 text-teal-400" />
+                                </div>
+                                <div className="text-center">
+                                  <p className="font-medium text-slate-200 text-lg">{file.name}</p>
+                                  <p className="text-sm text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="bg-slate-800 p-4 rounded-full group-hover:bg-slate-700 transition-colors">
+                                  <UploadCloud className="h-8 w-8 text-slate-400 group-hover:text-teal-400 transition-colors" />
+                                </div>
+                                <div>
+                                  <p className="font-medium text-slate-300 text-lg">Click to Upload</p>
+                                  <p className="text-sm text-slate-500 mt-1">PDF or DOCX</p>
+                                </div>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Job Desc */}
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <Label className="text-base font-medium text-slate-300">Job Description</Label>
-                        <Badge variant="outline" className="text-[10px] text-slate-500 border-slate-800 uppercase tracking-wider">Optional</Badge>
+                      {/* Job Desc */}
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <Label className="text-base font-medium text-slate-300">Job Description</Label>
+                          <Badge variant="outline" className="text-[10px] text-slate-500 border-slate-800 uppercase tracking-wider">Optional</Badge>
+                        </div>
+                        <Textarea
+                          placeholder="Paste the job description here..."
+                          className="h-[220px] bg-slate-900/40 border-slate-700/50 resize-none focus:ring-teal-500/50 focus:border-teal-500/50 text-slate-300 leading-relaxed rounded-2xl"
+                          value={jobDescription}
+                          onChange={(e) => setJobDescription(e.target.value)}
+                        />
                       </div>
-                      <Textarea
-                        placeholder="Paste the job description here..."
-                        className="h-[220px] bg-slate-900/40 border-slate-700/50 resize-none focus:ring-teal-500/50 focus:border-teal-500/50 text-slate-300 leading-relaxed rounded-2xl"
-                        value={jobDescription}
-                        onChange={(e) => setJobDescription(e.target.value)}
-                      />
                     </div>
-                  </div>
 
-                  {error && (
-                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3 text-red-400 bg-red-950/20 border border-red-900/50 p-4 rounded-xl">
-                      <AlertTriangle className="h-5 w-5 shrink-0" />
-                      <span className="text-sm font-medium">{error}</span>
-                    </motion.div>
-                  )}
+                    {error && (
+                      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3 text-red-400 bg-red-950/20 border border-red-900/50 p-4 rounded-xl">
+                        <AlertTriangle className="h-5 w-5 shrink-0" />
+                        <span className="text-sm font-medium">{error}</span>
+                      </motion.div>
+                    )}
 
-                  <Button
-                    onClick={analyzeResume}
-                    className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold py-8 text-xl shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:shadow-[0_0_40px_rgba(20,184,166,0.5)] transition-all rounded-xl relative overflow-hidden group"
-                    disabled={loading}
+                    <Button
+                      onClick={analyzeResume}
+                      className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold py-8 text-xl shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:shadow-[0_0_40px_rgba(20,184,166,0.5)] transition-all rounded-xl relative overflow-hidden group"
+                      disabled={loading}
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        {loading ? <Loader2 className="animate-spin" /> : <>Run Analysis <ArrowRight className="group-hover:translate-x-1 transition-transform" /></>}
+                      </span>
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* How It Works Section */}
+                <section className="space-y-16 py-10">
+                  <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.8 }}
+                    className="text-center"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      {loading ? <Loader2 className="animate-spin" /> : <>Run Analysis <ArrowRight className="group-hover:translate-x-1 transition-transform" /></>}
-                    </span>
-                  </Button>
-                </CardContent>
-              </Card>
+                    <h2 className="text-3xl md:text-5xl font-bold font-display mb-4">How <span className="text-teal-400">careerzen</span> Works</h2>
+                    <p className="text-slate-400 max-w-xl mx-auto italic text-lg">Three simple steps to resume perfection.</p>
+                  </motion.div>
 
-              {/* How It Works Section */}
-              <section className="space-y-16 py-10">
-                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center">
-                  <h2 className="text-3xl md:text-5xl font-bold font-display mb-4">How <span className="text-teal-400">careerzen</span> Works</h2>
-                  <p className="text-slate-400 max-w-xl mx-auto">Three simple steps to resume perfection.</p>
+                  <div className="grid md:grid-cols-3 gap-12">
+                    {[
+                      { title: "Upload", desc: "Drag & drop your resume securely.", img: "/assets/upload_mockup.png" },
+                      { title: "Analyze", desc: "Our AI scans for 50+ ATS checkpoints.", img: "/assets/analysis_mockup.png" },
+                      { title: "Improve", desc: "Get actionable tips & interview prep.", img: "/assets/results_mockup.png" }
+                    ].map((step, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 80 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-50px" }}
+                        transition={{ delay: i * 0.2, duration: 0.8, ease: "easeOut" }}
+                        className="space-y-6 text-center group"
+                      >
+                        <div className="relative h-[250px] w-full rounded-3xl overflow-hidden glass-card border-none shadow-2xl group-hover:scale-105 transition-transform duration-500">
+                          <Image src={step.img} alt={step.title} fill className="object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-bold mb-2 font-display">{step.title}</h3>
+                          <p className="text-slate-400 leading-relaxed italic">{step.desc}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </section>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="results"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+                className="space-y-8"
+              >
+                <motion.div variants={fadeInUp} className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-4xl font-bold font-display">Analysis Report</h2>
+                    <p className="text-slate-400">Detailed insights for your profile</p>
+                  </div>
+                  <Button onClick={() => setResult(null)} variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-300">
+                    Upload New Resume
+                  </Button>
                 </motion.div>
 
-                <div className="grid md:grid-cols-3 gap-12">
-                  {[
-                    { title: "Upload", desc: "Drag & drop your resume securely.", img: "/assets/upload_mockup.png" },
-                    { title: "Analyze", desc: "Our AI scans for 50+ ATS checkpoints.", img: "/assets/analysis_mockup.png" },
-                    { title: "Improve", desc: "Get actionable tips & interview prep.", img: "/assets/results_mockup.png" }
-                  ].map((step, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, y: 50 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.2 }}
-                      className="space-y-6 text-center group"
-                    >
-                      <div className="relative h-[250px] w-full rounded-3xl overflow-hidden glass-card border-none shadow-2xl group-hover:scale-105 transition-transform duration-500">
-                        <Image src={step.img} alt={step.title} fill className="object-cover" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold mb-2 font-display">{step.title}</h3>
-                        <p className="text-slate-400 leading-relaxed">{step.desc}</p>
-                      </div>
-                    </motion.div>
-                  ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <ScoreCard title="Match Score" score={result.matchPercentage} color="teal" />
+                  <ScoreCard title="ATS Score" score={result.atsScore} color="cyan" />
                 </div>
-              </section>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="results"
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-              className="space-y-8"
-            >
-              <motion.div variants={fadeInUp} className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-4xl font-bold font-display">Analysis Report</h2>
-                  <p className="text-slate-400">Detailed insights for your profile</p>
-                </div>
-                <Button onClick={() => setResult(null)} variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-300">
-                  Upload New Resume
-                </Button>
-              </motion.div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <ScoreCard title="Match Score" score={result.matchPercentage} color="teal" />
-                <ScoreCard title="ATS Score" score={result.atsScore} color="cyan" />
-              </div>
-
-              <motion.div variants={fadeInUp}>
-                <Card className="glass-card border-teal-500/10">
-                  <CardHeader><CardTitle>Candidate Summary</CardTitle></CardHeader>
-                  <CardContent><p className="text-slate-300 text-lg leading-relaxed">{result.candidateSummary}</p></CardContent>
-                </Card>
-              </motion.div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <FeedbackCard title="Missing Keywords" icon={AlertTriangle} items={result.missingKeywords} type="error" />
-                <FeedbackCard title="Improvements" icon={Lightbulb} items={result.improvements} type="warning" />
-              </div>
-
-              {result.interviewQuestions && (
                 <motion.div variants={fadeInUp}>
-                  <Card className="glass-card border-t-4 border-t-teal-500">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-2xl font-display">
-                        <CheckCircle2 className="text-teal-400" /> AI Interview Coach
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ScrollArea className="h-[400px] w-full pr-4">
-                        <div className="space-y-6">
-                          {result.interviewQuestions.map((q: any, i: number) => (
-                            <div key={i} className="bg-slate-950/30 p-6 rounded-xl border border-slate-800/50">
-                              <h4 className="text-lg font-semibold text-teal-200 mb-3">Q{i + 1}: {q.question}</h4>
-                              <div className="text-slate-400 text-sm italic border-l-2 border-slate-700 pl-4 py-1">
-                                <span className="font-bold text-slate-500 not-italic block mb-1">Tip:</span>
-                                {q.answer}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </ScrollArea>
-                    </CardContent>
+                  <Card className="glass-card border-teal-500/10">
+                    <CardHeader><CardTitle>Candidate Summary</CardTitle></CardHeader>
+                    <CardContent><p className="text-slate-300 text-lg leading-relaxed">{result.candidateSummary}</p></CardContent>
                   </Card>
                 </motion.div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <FeedbackCard title="Missing Keywords" icon={AlertTriangle} items={result.missingKeywords} type="error" />
+                  <FeedbackCard title="Improvements" icon={Lightbulb} items={result.improvements} type="warning" />
+                </div>
+
+                {result.interviewQuestions && (
+                  <motion.div variants={fadeInUp}>
+                    <Card className="glass-card border-t-4 border-t-teal-500">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-2xl font-display">
+                          <CheckCircle2 className="text-teal-400" /> AI Interview Coach
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ScrollArea className="h-[400px] w-full pr-4">
+                          <div className="space-y-6">
+                            {result.interviewQuestions.map((q: any, i: number) => (
+                              <div key={i} className="bg-slate-950/30 p-6 rounded-xl border border-slate-800/50">
+                                <h4 className="text-lg font-semibold text-teal-200 mb-3">Q{i + 1}: {q.question}</h4>
+                                <div className="text-slate-400 text-sm italic border-l-2 border-slate-700 pl-4 py-1">
+                                  <span className="font-bold text-slate-500 not-italic block mb-1">Tip:</span>
+                                  {q.answer}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
       </div>
 
