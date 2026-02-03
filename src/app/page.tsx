@@ -136,6 +136,20 @@ export default function Home() {
           </a>
 
           <div className="flex items-center gap-4">
+            <div className="hidden md:block mr-2">
+              <a
+                href="https://github.com/aniruddhaadak80/smart-resume-analyzer"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium rounded-full hover:scale-105 transition-transform duration-300"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 animate-gradient-xy opacity-70 blur-md group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative flex items-center px-4 py-2 bg-slate-950 rounded-full transition-all ease-in duration-75 group-hover:bg-slate-900">
+                  <Github className="w-4 h-4 mr-2 text-white group-hover:text-teal-400 transition-colors" />
+                  <span className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent font-bold group-hover:from-teal-300 group-hover:to-cyan-300">Star on GitHub</span>
+                </div>
+              </a>
+            </div>
             <SignedOut>
               <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                 <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50">Sign In</Button>
@@ -146,6 +160,20 @@ export default function Home() {
             </SignedOut>
             <SignedIn>
               <div className="flex items-center gap-4">
+                <div className="hidden md:block mr-2">
+                  <a
+                    href="https://github.com/aniruddhaadak80/smart-resume-analyzer"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium rounded-full hover:scale-105 transition-transform duration-300"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 animate-gradient-xy opacity-70 blur-md group-hover:opacity-100 transition-opacity"></div>
+                    <div className="relative flex items-center px-4 py-1.5 bg-slate-950 rounded-full transition-all ease-in duration-75 group-hover:bg-slate-900">
+                      <Github className="w-4 h-4 mr-2 text-white group-hover:text-teal-400 transition-colors" />
+                      <span className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent font-bold group-hover:from-teal-300 group-hover:to-cyan-300">Star on GitHub</span>
+                    </div>
+                  </a>
+                </div>
                 <a href="/dashboard" className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block">
                   Dashboard
                 </a>
