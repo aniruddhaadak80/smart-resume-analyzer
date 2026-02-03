@@ -37,7 +37,7 @@ Get actionable feedback and prep for your interview.
 
 - **Framework**: Next.js 15 (App Router)
 - **Styling**: Tailwind CSS v4 + Framer Motion + Glassmorphism
-- **AI**: Google Gemini 1.5 Flash
+- **AI**: Google Gemini 3 Flash Preview
 - **Parsing**: `pdf2json` & `mammoth`
 - **Language**: TypeScript
 
