@@ -1,58 +1,77 @@
-# 🚀 Smart Resume Analyzer
+# careerzen 🧘‍♂️🚀
 
-![Next.js](https://img.shields.io/badge/Next.js-15-black)
-![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38B2AC)
-![Gemini AI](https://img.shields.io/badge/AI-Gemini_1.5-8E75B2)
+> **AI-Powered Resume Optimization & Interview Prep**
 
-A powerful, **AI-driven Resume Optimizer** that helps you land your dream job. It analyzes your resume against job descriptions (or generally) to provide ATS scores, missing keywords, and actionable improvements.
+![careerzen Hero](/public/assets/analysis_mockup.png)
+
+**careerzen** is a next-generation career tool that helps you land your dream job. It uses Google's Gemini AI to analyze your resume against job descriptions, giving you a match score, ATS optimization tips, and even acts as an AI Interview Coach.
+
+---
 
 ## ✨ Features
 
-- **🤖 AI-Powered Analysis**: Uses Google's **Gemini 1.5 Flash** for deep understanding of your profile.
-- **📄 Multi-Format Support**: Parses both **PDF** and **DOCX** resumes.
-- **⚡ Instant Feedback**: Get a match score (0-100%) and ATS readiness score in seconds.
-- **🎯 Targeted Keywords**: Identifies exactly which keywords you are missing for specific job roles.
-- **🎨 Premium UI**: Built with a sleek "Neon Dark" aesthetic using **Tailwind CSS** & **GSAP** animations.
-- **📱 Responsive**: Fully optimized for mobile and desktop.
+- **🎯 instant Analysis**: Get a Match Score & ATS Score in seconds.
+- **🔍 Smart Audit**: Finds missing keywords critical for passing automated screeners.
+- **🤖 AI Interview Coach**: Generates tailored interview questions based on your resume's weak spots.
+- **⚡ Modern UI**: sleek, motion-rich interface with dark mode aesthetics.
 
-## 🛠️ Tech Stack
+---
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
-- **Animations**: [GSAP](https://gsap.com/)
-- **AI Model**: [Google Gemini API](https://ai.google.dev/)
-- **Parsing**: `pdf-parse` & `mammoth`
+## 🚀 How it Works
 
-## 🚀 Getting Started
+### 1. Upload
+Drag & drop your resume (PDF/DOCX).
+![Upload](/public/assets/upload_mockup.png)
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/aniruddhaadak80/smart-resume-analyzer.git
-cd smart-resume-analyzer
-```
+### 2. Analyze
+The AI scans your profile against 50+ ATS checkpoints.
+![Analyze](/public/assets/analysis_mockup.png)
 
-### 2. Install Dependencies
-```bash
-npm install
-```
+### 3. Improve
+Get actionable feedback and prep for your interview.
+![Results](/public/assets/results_mockup.png)
 
-### 3. Configure Environment
-Create a `.env.local` file in the root directory and add your Google Gemini API Key:
-```env
-GEMINI_API_KEY=your_api_key_here
-```
-> Get your free key at [aistudio.google.com](https://aistudio.google.com/).
+---
 
-### 4. Run the App
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) to see the app!
+## 🛠 Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS v4 + Framer Motion + Glassmorphism
+- **AI**: Google Gemini 1.5 Flash
+- **Parsing**: `pdf2json` & `mammoth`
+- **Language**: TypeScript
+
+---
+
+## 🏁 Getting Started
+
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/aniruddhaadak80/smart-resume-analyzer.git
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up API Key**
+   Create a `.env.local` file:
+   ```env
+   GEMINI_API_KEY=your_google_api_key_here
+   ```
+
+4. **Run it!**
+   ```bash
+   npm run dev
+   ```
+
+---
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
+---
 
-This project is open-source and available under the [MIT License](LICENSE).
+© 2026 Aniruddha. Built with ❤️ and AI.

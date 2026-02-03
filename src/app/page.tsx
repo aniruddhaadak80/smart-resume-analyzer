@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,12 +9,21 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb } from "lucide-react";
+import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Github, Twitter, Linkedin } from "lucide-react";
 import Image from "next/image";
 
+// Animation Variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
+};
+
 export default function Home() {
-  const containerRef = useRef(null);
   const [file, setFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,15 +34,6 @@ export default function Home() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  // Initial Animation
-  useGSAP(() => {
-    if (!isMounted) return;
-    const tl = gsap.timeline();
-    tl.from(".hero-text", { y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out" })
-      .from(".upload-card", { y: 30, opacity: 0, duration: 0.8, ease: "back.out(1.7)" }, "-=0.5")
-      .from(".feature-card", { y: 50, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }, "-=0.2");
-  }, { scope: containerRef, dependencies: [isMounted] });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -50,9 +49,6 @@ export default function Home() {
 
     setLoading(true);
     setError('');
-
-    // Animate out upload card
-    gsap.to(".upload-card", { scale: 0.95, opacity: 0.5, duration: 0.3 });
 
     const formData = new FormData();
     formData.append('resume', file);
@@ -70,269 +66,308 @@ export default function Home() {
 
       setResult(data);
 
-      // Animate results in
-      setTimeout(() => {
-        gsap.from(".results-container", { y: 50, opacity: 0, duration: 0.8, ease: "power3.out" });
-        gsap.from(".score-card", { scale: 0, opacity: 0, duration: 0.5, stagger: 0.1, delay: 0.3 });
-      }, 100);
-
     } catch (err: any) {
       setError(err.message || 'Something went wrong.');
     } finally {
       setLoading(false);
-      gsap.to(".upload-card", { scale: 1, opacity: 1, duration: 0.3 });
     }
   };
 
   if (!isMounted) return null;
 
   return (
-    <main ref={containerRef} className="min-h-screen bg-slate-950 text-slate-50 p-4 md:p-8 overflow-hidden relative">
-      {/* Background Gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
+    <main className="min-h-screen bg-slate-950 text-slate-50 overflow-x-hidden selection:bg-teal-500/30">
 
-      <div className="max-w-5xl mx-auto space-y-20 relative z-10 pb-20">
+      {/* Background Ambience */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px]" />
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 md:px-8 relative z-10 pb-20">
+
+        {/* Navbar / Logo Area */}
+        <header className="py-8 flex justify-center md:justify-start">
+          <div className="flex items-center gap-3">
+            <div className="relative w-10 h-10">
+              <Image src="/logo.png" alt="Logo" fill className="object-contain" />
+            </div>
+            <span className="text-xl font-bold font-display tracking-tight">career<span className="text-teal-400">zen</span></span>
+          </div>
+        </header>
 
         {/* Hero Section */}
-        <section className="text-center space-y-6 pt-10 flex flex-col items-center">
-          <div className="relative w-24 h-24 mb-4 hero-text">
-            <Image
-              src="/logo.png"
-              alt="careerzen logo"
-              fill
-              className="object-contain"
-            />
-          </div>
-          <Badge variant="secondary" className="hero-text bg-indigo-500/10 text-indigo-300 border-indigo-500/20 px-4 py-1 text-sm rounded-full mb-4">
-            ✨ AI-Powered V2.0 Now Live
-          </Badge>
-          <h1 className="hero-text text-5xl md:text-7xl font-bold tracking-tighter leading-tight font-display mb-2">
-            career<span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-indigo-400">zen</span>
-          </h1>
-          <p className="hero-text text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Optimize your resume for any job description using advanced Gemini AI.
-            Get instant feedback on ATS scores, missing keywords, and actionable insights.
-          </p>
-        </section>
+        <motion.section
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="text-center space-y-8 pt-10 pb-20"
+        >
+          <motion.div variants={fadeInUp} className="inline-block">
+            <Badge variant="secondary" className="bg-teal-950/50 text-teal-300 border-teal-500/20 px-4 py-1.5 text-sm rounded-full backdrop-blur-md">
+              ✨ AI-Powered Career Optimization
+            </Badge>
+          </motion.div>
 
-        {/* Upload Section */}
-        {!result && (
-          <div className="space-y-16">
-            <Card className="upload-card glass-card border-white/10 bg-slate-900/50 backdrop-blur-xl max-w-4xl mx-auto">
-              <CardHeader>
-                <CardTitle className="text-2xl">Start Your Analysis</CardTitle>
-                <CardDescription className="text-slate-400">Upload your resume (PDF/DOCX). Job description is optional but recommended.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
+          <motion.h1 variants={fadeInUp} className="text-5xl md:text-8xl font-bold tracking-tighter leading-none font-display text-white">
+            Land Your Dream <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-400 to-emerald-400 text-glow">
+              Job Faster.
+            </span>
+          </motion.h1>
 
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <Label htmlFor="resume" className="text-base">Resume File <span className="text-red-400">*</span></Label>
-                    <div className="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center hover:bg-slate-800/50 transition-colors cursor-pointer relative group h-[200px] flex flex-col items-center justify-center">
-                      <input
-                        type="file"
-                        id="resume"
-                        accept=".pdf,.docx"
-                        onChange={handleFileChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50"
-                      />
-                      <div className="flex flex-col items-center gap-3 group-hover:scale-105 transition-transform pointer-events-none">
-                        {file ? (
-                          <>
-                            <div className="bg-indigo-500/10 p-4 rounded-full">
-                              <FileText className="h-10 w-10 text-indigo-400" />
-                            </div>
-                            <span className="font-medium text-slate-200 text-lg">{file.name}</span>
-                            <span className="text-sm text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
-                          </>
-                        ) : (
-                          <>
-                            <div className="bg-slate-800 p-4 rounded-full">
-                              <UploadCloud className="h-10 w-10 text-slate-500" />
-                            </div>
-                            <p className="font-medium text-slate-300 text-lg">Click to upload or drag & drop</p>
-                            <p className="text-sm text-slate-500">PDF or DOCX (Max 5MB)</p>
-                          </>
-                        )}
+          <motion.p variants={fadeInUp} className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            Upload your resume and get instant, AI-driven feedback to beat the ATS and impress recruiters. Tailored interview prep included.
+          </motion.p>
+        </motion.section>
+
+        {/* Main Interface */}
+        <AnimatePresence mode="wait">
+          {!result ? (
+            <motion.div
+              key="upload"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.5 }}
+              className="space-y-24"
+            >
+              {/* Upload Card */}
+              <Card className="glass-card border-slate-800 bg-slate-900/60 backdrop-blur-2xl max-w-4xl mx-auto overflow-hidden">
+                {/* Progress Bar Loader */}
+                {loading && <motion.div layoutId="loader" className="h-1 bg-gradient-to-r from-teal-500 to-cyan-500 absolute top-0 left-0 w-full" initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 2, repeat: Infinity }} />}
+
+                <CardHeader className="text-center pb-10 pt-10">
+                  <CardTitle className="text-3xl font-display">Start Analysis</CardTitle>
+                  <CardDescription className="text-slate-400 text-lg">Process your resume in seconds.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-8 px-8 pb-10">
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {/* Dropzone */}
+                    <div className="space-y-3 group">
+                      <Label className="text-base font-medium text-slate-300">Resume File <span className="text-teal-400">*</span></Label>
+                      <div className="border-2 border-dashed border-slate-700/50 rounded-2xl p-8 text-center bg-slate-900/40 hover:bg-slate-800/60 hover:border-teal-500/50 transition-all cursor-pointer relative h-[220px] flex flex-col items-center justify-center group-hover:shadow-[0_0_20px_rgba(20,184,166,0.1)]">
+                        <input type="file" accept=".pdf,.docx" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
+                        <div className="flex flex-col items-center gap-4 transition-transform group-hover:-translate-y-1">
+                          {file ? (
+                            <>
+                              <div className="bg-teal-500/20 p-4 rounded-full ring-1 ring-teal-500/50">
+                                <FileText className="h-8 w-8 text-teal-400" />
+                              </div>
+                              <div className="text-center">
+                                <p className="font-medium text-slate-200 text-lg">{file.name}</p>
+                                <p className="text-sm text-slate-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="bg-slate-800 p-4 rounded-full group-hover:bg-slate-700 transition-colors">
+                                <UploadCloud className="h-8 w-8 text-slate-400 group-hover:text-teal-400 transition-colors" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-slate-300 text-lg">Click to Upload</p>
+                                <p className="text-sm text-slate-500 mt-1">PDF or DOCX</p>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <Label htmlFor="job-desc" className="text-base">Job Description</Label>
-                      <Badge variant="outline" className="text-xs text-slate-400 border-slate-700">Optional</Badge>
+                    {/* Job Desc */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <Label className="text-base font-medium text-slate-300">Job Description</Label>
+                        <Badge variant="outline" className="text-[10px] text-slate-500 border-slate-800 uppercase tracking-wider">Optional</Badge>
+                      </div>
+                      <Textarea
+                        placeholder="Paste the job description here..."
+                        className="h-[220px] bg-slate-900/40 border-slate-700/50 resize-none focus:ring-teal-500/50 focus:border-teal-500/50 text-slate-300 leading-relaxed rounded-2xl"
+                        value={jobDescription}
+                        onChange={(e) => setJobDescription(e.target.value)}
+                      />
                     </div>
-                    <Textarea
-                      id="job-desc"
-                      placeholder="Paste the job description here for targeted keywords analysis..."
-                      className="h-[200px] bg-slate-900/50 border-slate-700 resize-none focus:ring-indigo-500 text-slate-300 leading-relaxed"
-                      value={jobDescription}
-                      onChange={(e) => setJobDescription(e.target.value)}
-                    />
                   </div>
-                </div>
 
-                {error && (
-                  <div className="flex items-center gap-3 text-red-400 bg-red-950/20 border border-red-900/50 p-4 rounded-lg">
-                    <AlertTriangle className="h-5 w-5 shrink-0" />
-                    <span className="text-sm font-medium">{error}</span>
-                  </div>
-                )}
-
-                <Button
-                  onClick={analyzeResume}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-8 text-xl shadow-xl hover:shadow-indigo-500/20 transition-all rounded-xl"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-3 h-6 w-6 animate-spin" /> Analyzing Resume...
-                    </>
-                  ) : (
-                    "Run Free Analysis"
+                  {error && (
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3 text-red-400 bg-red-950/20 border border-red-900/50 p-4 rounded-xl">
+                      <AlertTriangle className="h-5 w-5 shrink-0" />
+                      <span className="text-sm font-medium">{error}</span>
+                    </motion.div>
                   )}
+
+                  <Button
+                    onClick={analyzeResume}
+                    className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold py-8 text-xl shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:shadow-[0_0_40px_rgba(20,184,166,0.5)] transition-all rounded-xl relative overflow-hidden group"
+                    disabled={loading}
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {loading ? <Loader2 className="animate-spin" /> : <>Run Analysis <ArrowRight className="group-hover:translate-x-1 transition-transform" /></>}
+                    </span>
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* How It Works Section */}
+              <section className="space-y-16 py-10">
+                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center">
+                  <h2 className="text-3xl md:text-5xl font-bold font-display mb-4">How <span className="text-teal-400">careerzen</span> Works</h2>
+                  <p className="text-slate-400 max-w-xl mx-auto">Three simple steps to resume perfection.</p>
+                </motion.div>
+
+                <div className="grid md:grid-cols-3 gap-12">
+                  {[
+                    { title: "Upload", desc: "Drag & drop your resume securely.", img: "/assets/upload_mockup.png" },
+                    { title: "Analyze", desc: "Our AI scans for 50+ ATS checkpoints.", img: "/assets/analysis_mockup.png" },
+                    { title: "Improve", desc: "Get actionable tips & interview prep.", img: "/assets/results_mockup.png" }
+                  ].map((step, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 50 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.2 }}
+                      className="space-y-6 text-center group"
+                    >
+                      <div className="relative h-[250px] w-full rounded-3xl overflow-hidden glass-card border-none shadow-2xl group-hover:scale-105 transition-transform duration-500">
+                        <Image src={step.img} alt={step.title} fill className="object-cover" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold mb-2 font-display">{step.title}</h3>
+                        <p className="text-slate-400 leading-relaxed">{step.desc}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="results"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="space-y-8"
+            >
+              <motion.div variants={fadeInUp} className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-4xl font-bold font-display">Analysis Report</h2>
+                  <p className="text-slate-400">Detailed insights for your profile</p>
+                </div>
+                <Button onClick={() => setResult(null)} variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-300">
+                  Upload New Resume
                 </Button>
+              </motion.div>
 
-              </CardContent>
-            </Card>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <ScoreCard title="Match Score" score={result.matchPercentage} color="teal" />
+                <ScoreCard title="ATS Score" score={result.atsScore} color="cyan" />
+              </div>
 
-            {/* Features Grid */}
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { title: "ATS Scoring", icon: CheckCircle2, desc: "Get a match score out of 100 based on modern recruiting standards." },
-                { title: "Smart Keywords", icon: Lightbulb, desc: "Identify missing keywords crucial for passing automated screeners." },
-                { title: "Instant Feedback", icon: FileText, desc: "Detailed breakdown of strengths, weaknesses, and improvement tips." }
-              ].map((feature, i) => (
-                <div key={i} className="feature-card glass-card p-6 rounded-xl space-y-4 hover:bg-slate-800/50 transition-colors">
-                  <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-                    <feature.icon className="h-6 w-6 text-indigo-400" />
-                  </div>
-                  <h3 className="text-xl font-bold font-display">{feature.title}</h3>
-                  <p className="text-slate-400 leading-relaxed">
-                    {feature.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+              <motion.div variants={fadeInUp}>
+                <Card className="glass-card border-teal-500/10">
+                  <CardHeader><CardTitle>Candidate Summary</CardTitle></CardHeader>
+                  <CardContent><p className="text-slate-300 text-lg leading-relaxed">{result.candidateSummary}</p></CardContent>
+                </Card>
+              </motion.div>
 
-        {/* Results Section */}
-        {result && (
-          <div className="results-container space-y-8">
-            <div className="flex items-center justify-between">
-              <h2 className="text-4xl font-bold font-display">Analysis Report</h2>
-              <Button variant="outline" onClick={() => setResult(null)} className="border-slate-700 hover:bg-slate-800">
-                Analyze New Resume
-              </Button>
-            </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <FeedbackCard title="Missing Keywords" icon={AlertTriangle} items={result.missingKeywords} type="error" />
+                <FeedbackCard title="Improvements" icon={Lightbulb} items={result.improvements} type="warning" />
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="score-card glass-card border-none bg-indigo-500/10">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-indigo-300">Match Percentage</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-5xl font-bold text-indigo-400 font-display">{result.matchPercentage}%</div>
-                </CardContent>
-              </Card>
-              <Card className="score-card glass-card border-none bg-purple-500/10">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-purple-300">ATS Score</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-5xl font-bold text-purple-400 font-display">{result.atsScore}/100</div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card className="glass-card">
-              <CardHeader>
-                <CardTitle className="text-xl">Candidate Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-slate-300 leading-relaxed text-lg">{result.candidateSummary}</p>
-              </CardContent>
-            </Card>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="glass-card border-l-4 border-l-red-500">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-red-400">
-                    <AlertTriangle className="h-5 w-5" /> Missing Keywords
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {result.missingKeywords && result.missingKeywords.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {result.missingKeywords.map((kw: string, i: number) => (
-                        <Badge key={i} variant="secondary" className="bg-red-950/50 text-red-300 border-red-900 px-3 py-1">{kw}</Badge>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-slate-500 italic">No missing critical keywords found. Great job!</p>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card className="glass-card border-l-4 border-l-yellow-500">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-yellow-400">
-                    <Lightbulb className="h-5 w-5" /> Improvements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[250px] w-full pr-4">
-                    <ul className="space-y-4">
-                      {result.improvements?.map((imp: string, i: number) => (
-                        <li key={i} className="flex gap-3 text-slate-300">
-                          <span className="text-yellow-500 mt-1">•</span>
-                          <span className="leading-relaxed">{imp}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* AI Interview Coach Section */}
-            {result.interviewQuestions && (
-              <Card className="glass-card border-t-4 border-t-indigo-500 mt-8">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-2xl font-display text-white">
-                    <CheckCircle2 className="h-6 w-6 text-indigo-400" />
-                    AI Interview Coach
-                  </CardTitle>
-                  <CardDescription>
-                    Based on your resume gaps, here are 5 potential interview questions you might be asked.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[400px] w-full pr-4">
-                    <div className="space-y-6">
-                      {result.interviewQuestions.map((item: any, i: number) => (
-                        <div key={i} className="bg-slate-900/40 p-5 rounded-xl border border-white/5 space-y-3">
-                          <h4 className="font-semibold text-lg text-indigo-200">
-                            Q{i + 1}: {item.question}
-                          </h4>
-                          <div className="bg-slate-950/50 p-4 rounded-lg text-slate-300 text-sm italic border-l-2 border-slate-700">
-                            <span className="font-bold text-slate-400 not-italic block mb-1">Model Answer Tip:</span>
-                            {item.answer}
-                          </div>
+              {result.interviewQuestions && (
+                <motion.div variants={fadeInUp}>
+                  <Card className="glass-card border-t-4 border-t-teal-500">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-2xl font-display">
+                        <CheckCircle2 className="text-teal-400" /> AI Interview Coach
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ScrollArea className="h-[400px] w-full pr-4">
+                        <div className="space-y-6">
+                          {result.interviewQuestions.map((q: any, i: number) => (
+                            <div key={i} className="bg-slate-950/30 p-6 rounded-xl border border-slate-800/50">
+                              <h4 className="text-lg font-semibold text-teal-200 mb-3">Q{i + 1}: {q.question}</h4>
+                              <div className="text-slate-400 text-sm italic border-l-2 border-slate-700 pl-4 py-1">
+                                <span className="font-bold text-slate-500 not-italic block mb-1">Tip:</span>
+                                {q.answer}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        )}
+                      </ScrollArea>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-900 bg-slate-950 relative z-20 py-12">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="relative w-8 h-8 opacity-80"><Image src="/logo.png" alt="logo" fill className="object-contain" /></div>
+            <span className="font-bold text-slate-500">careerzen</span>
+          </div>
+          <div className="flex gap-6 text-slate-500">
+            <Github className="h-5 w-5 hover:text-white transition-colors cursor-pointer" />
+            <Twitter className="h-5 w-5 hover:text-white transition-colors cursor-pointer" />
+            <Linkedin className="h-5 w-5 hover:text-white transition-colors cursor-pointer" />
+          </div>
+          <div className="text-sm text-slate-600">
+            © 2026 Aniruddha. All rights reserved.
+          </div>
+        </div>
+      </footer>
+
     </main>
   );
+}
+
+// Sub-components for cleaner code
+function ScoreCard({ title, score, color }: { title: string, score: number, color: 'teal' | 'cyan' }) {
+  return (
+    <motion.div variants={fadeInUp}>
+      <Card className={`glass-card border-none bg-${color}-500/5 overflow-hidden relative`}>
+        <div className={`absolute top-0 right-0 w-20 h-20 bg-${color}-500/10 rounded-full blur-2xl -mr-10 -mt-10`} />
+        <CardHeader className="pb-2"><CardTitle className={`text-sm font-medium text-${color}-300 uppercase tracking-widest`}>{title}</CardTitle></CardHeader>
+        <CardContent>
+          <div className={`text-6xl font-bold text-${color}-400 font-display`}>{score}<span className="text-2xl text-slate-600">%</span></div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
+
+function FeedbackCard({ title, icon: Icon, items, type }: { title: string, icon: any, items: string[], type: 'error' | 'warning' }) {
+  const colorClass = type === 'error' ? 'red' : 'yellow';
+  return (
+    <motion.div variants={fadeInUp}>
+      <Card className={`glass-card border-l-4 border-l-${colorClass}-500`}>
+        <CardHeader>
+          <CardTitle className={`flex items-center gap-2 text-${colorClass}-400`}>
+            <Icon className="h-5 w-5" /> {title}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {items?.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {items.map((item, i) => (
+                type === 'error'
+                  ? <Badge key={i} variant="secondary" className="bg-red-950/40 text-red-300 border-red-900/50">{item}</Badge>
+                  : <div key={i} className="flex gap-2 text-slate-300 w-full"><span className="text-yellow-500">•</span>{item}</div>
+              ))}
+            </div>
+          ) : <p className="text-slate-500 italic">None found.</p>}
+        </CardContent>
+      </Card>
+    </motion.div>
+  )
 }
