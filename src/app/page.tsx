@@ -51,6 +51,21 @@ export default function Home() {
   useEffect(() => {
     if (result) {
       localStorage.setItem('careerzen_result', JSON.stringify(result));
+
+      // Also save to history
+      const history = JSON.parse(localStorage.getItem('careerzen_history') || '[]');
+      const newEntry = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        fileName: file?.name || 'Resume',
+        result
+      };
+      // Prevent saving duplicates on re-renders by checking if the last one is identical (optional simple check)
+      const lastEntry = history[0];
+      if (!lastEntry || JSON.stringify(lastEntry.result) !== JSON.stringify(result)) {
+        history.unshift(newEntry);
+        localStorage.setItem('careerzen_history', JSON.stringify(history));
+      }
     }
   }, [result]);
 
@@ -131,6 +146,9 @@ export default function Home() {
             </SignedOut>
             <SignedIn>
               <div className="flex items-center gap-4">
+                <a href="/dashboard" className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block">
+                  Dashboard
+                </a>
                 <span className="text-sm text-slate-400 hidden md:inline-block">Welcome back!</span>
                 <UserButton afterSignOutUrl="/" appearance={{
                   elements: {
