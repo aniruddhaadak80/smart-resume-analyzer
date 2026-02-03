@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { analyzeResumeWithGemini } from "@/lib/gemini";
 const pdf = require("pdf-parse");
 import mammoth from "mammoth";
 
-// Force dynamic to prevent build-time evaluation
+// Force dynamic to prevent ANY build-time evaluation
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
     try {
@@ -29,6 +29,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
         }
 
+        // Dynamic import to completely avoid build-time evaluation
+        const { analyzeResumeWithGemini } = await import("@/lib/gemini");
         const analysisResults = await analyzeResumeWithGemini(resumeText, jobDescription);
 
         return NextResponse.json(analysisResults);
