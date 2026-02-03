@@ -159,10 +159,14 @@
   color: transparent;
   background-image: linear-gradient(to right, #2dd4bf, #22d3ee, #34d399);
 }
+
 @keyframes gradient-xy {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
