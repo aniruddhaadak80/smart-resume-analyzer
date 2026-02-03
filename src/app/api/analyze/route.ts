@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-const pdf = require("pdf-parse");
 import mammoth from "mammoth";
+import { analyzeResumeWithGemini } from "@/lib/gemini";
+import fs from 'fs';
+import path from 'path';
 
 // Force dynamic to prevent ANY build-time evaluation
 export const dynamic = 'force-dynamic';
@@ -20,8 +22,25 @@ export async function POST(req: NextRequest) {
         let resumeText = "";
 
         if (file.type === "application/pdf") {
-            const pdfData = await pdf(buffer);
-            resumeText = pdfData.text;
+            try {
+                const PDFParser = require("pdf2json");
+                const pdfParser = new PDFParser(null, 1); // 1 = text only
+
+                resumeText = await new Promise((resolve, reject) => {
+                    pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError));
+                    pdfParser.on("pdfParser_dataReady", (pdfData: any) => {
+                        // Extract text from the JSON structure
+                        // pdf2json returns URL-encoded text
+                        const rawText = pdfParser.getRawTextContent();
+                        resolve(rawText);
+                    });
+
+                    pdfParser.parseBuffer(buffer);
+                });
+            } catch (pdfError) {
+                console.error("PDF Parsing failed:", pdfError);
+                return NextResponse.json({ error: "Failed to parse PDF." }, { status: 500 });
+            }
         } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
             const result = await mammoth.extractRawText({ buffer });
             resumeText = result.value;
@@ -29,8 +48,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
         }
 
-        // Dynamic import to completely avoid build-time evaluation
-        const { analyzeResumeWithGemini } = await import("@/lib/gemini");
         const analysisResults = await analyzeResumeWithGemini(resumeText, jobDescription);
 
         return NextResponse.json(analysisResults);
