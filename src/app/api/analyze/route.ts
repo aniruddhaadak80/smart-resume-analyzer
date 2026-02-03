@@ -9,8 +9,8 @@ export async function POST(req: NextRequest) {
         const file = formData.get("resume") as File;
         const jobDescription = formData.get("jobDescription") as string;
 
-        if (!file || !jobDescription) {
-            return NextResponse.json({ error: "Missing file or job description" }, { status: 400 });
+        if (!file) {
+            return NextResponse.json({ error: "Missing file" }, { status: 400 });
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
