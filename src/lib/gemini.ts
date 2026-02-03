@@ -1,11 +1,10 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+// The client gets the API key from the environment variable `GEMINI_API_KEY`.
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const analyzeResumeWithGemini = async (resumeText: string, jobDescription?: string) => {
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
         let prompt = "";
         const isJobDescProvided = jobDescription && jobDescription.trim().length > 0;
 
@@ -39,28 +38,27 @@ export const analyzeResumeWithGemini = async (resumeText: string, jobDescription
             "matchPercentage": (integer 0-100),
             "atsScore": (integer 0-100),
             "candidateSummary": "2-3 sentences summary",
-            "missingKeywords": ["list", "of", "missing" "keywords"],
+            "missingKeywords": ["list", "of", "missing", "keywords"],
             "skillsFound": ["list", "of", "skills", "found"],
             "improvements": ["list", "of", "improvements"],
             "interviewQuestions": [
                 {
                     "question": "Technical/Behavioral question based on resume gaps",
                     "answer": "Ideal brief answer"
-                },
-                {
-                     "question": "Another question...",
-                     "answer": "..."
-                },
-                ... (provide 5 questions)
+                }
             ]
         }
         
-        IMPORTANT: Return ONLY raw JSON. Do not include markdown formatting like \`\`\`json.
+        Provide exactly 5 interviewQuestions.
+        IMPORTANT: Return ONLY raw JSON. Do not include markdown formatting.
         `;
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        const response = await ai.models.generateContent({
+            model: "gemini-2.0-flash",
+            contents: prompt,
+        });
+
+        const text = response.text ?? "";
 
         // Clean up markdown code blocks if present
         const cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
