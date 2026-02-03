@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Github, Twitter, Linkedin } from "lucide-react";
-import Image from "next/image";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Github, Twitter, Linkedin, Globe, Mail, Code2, Terminal, Send, Link as LinkIcon, Cpu } from "lucide-react";
+import Image from "next/image";
 
 import { Variants } from "framer-motion";
 
@@ -393,17 +393,26 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950 relative z-20 py-12">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <a href="/" className="flex items-center gap-2 cursor-pointer group">
-            <div className="relative w-8 h-8 opacity-80 group-hover:opacity-100 transition-opacity"><Image src="/logo.png" alt="logo" fill className="object-contain" /></div>
-            <span className="font-bold text-slate-500 group-hover:text-slate-300 transition-colors">careerzen</span>
-          </a>
-          <div className="flex gap-6 text-slate-500">
-            <Github className="h-5 w-5 hover:text-white transition-colors cursor-pointer" />
-            <Twitter className="h-5 w-5 hover:text-white transition-colors cursor-pointer" />
-            <Linkedin className="h-5 w-5 hover:text-white transition-colors cursor-pointer" />
+          <div className="flex flex-col gap-4 items-center md:items-start">
+            <a href="/" className="flex items-center gap-2 cursor-pointer group">
+              <div className="relative w-8 h-8 opacity-80 group-hover:opacity-100 transition-opacity"><Image src="/logo.png" alt="logo" fill className="object-contain" /></div>
+              <span className="font-bold text-slate-500 group-hover:text-slate-300 transition-colors">careerzen</span>
+            </a>
+            <div className="text-sm text-slate-600">
+              © 2026 careerzen. All rights reserved.
+            </div>
           </div>
-          <div className="text-sm text-slate-600">
-            © 2026 Aniruddha. All rights reserved.
+
+          <div className="flex flex-wrap justify-center gap-6 text-slate-500">
+            <a href="https://www.linkedin.com/in/aniruddha-adak" target="_blank" rel="noopener noreferrer" title="LinkedIn"><Linkedin className="h-5 w-5 hover:text-white transition-colors" /></a>
+            <a href="https://github.com/aniruddhaadak80" target="_blank" rel="noopener noreferrer" title="GitHub"><Github className="h-5 w-5 hover:text-white transition-colors" /></a>
+            <a href="https://x.com/aniruddhadak" target="_blank" rel="noopener noreferrer" title="Twitter / X"><Twitter className="h-5 w-5 hover:text-white transition-colors" /></a>
+            <a href="https://dev.to/aniruddhaadak" target="_blank" rel="noopener noreferrer" title="Dev Profile"><Code2 className="h-5 w-5 hover:text-white transition-colors" /></a>
+            <a href="https://codepen.io/aniruddhaadak" target="_blank" rel="noopener noreferrer" title="CodePen"><Cpu className="h-5 w-5 hover:text-white transition-colors" /></a>
+            <a href="https://aniruddha-adak.vercel.app" target="_blank" rel="noopener noreferrer" title="Portfolio"><Globe className="h-5 w-5 hover:text-white transition-colors" /></a>
+            <a href="mailto:aniruddhaadak80@gmail.com" title="Email"><Mail className="h-5 w-5 hover:text-white transition-colors" /></a>
+            <a href="https://t.me/aniruddhaadak" target="_blank" rel="noopener noreferrer" title="Telegram"><Send className="h-5 w-5 hover:text-white transition-colors" /></a>
+            <a href="https://linktr.ee/aniruddha.adak" target="_blank" rel="noopener noreferrer" title="Linktree"><LinkIcon className="h-5 w-5 hover:text-white transition-colors" /></a>
           </div>
         </div>
       </footer>
