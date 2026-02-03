@@ -288,6 +288,38 @@ export default function Home() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* AI Interview Coach Section */}
+            {result.interviewQuestions && (
+              <Card className="glass-card border-t-4 border-t-indigo-500 mt-8">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-2xl font-display text-white">
+                    <CheckCircle2 className="h-6 w-6 text-indigo-400" />
+                    AI Interview Coach
+                  </CardTitle>
+                  <CardDescription>
+                    Based on your resume gaps, here are 5 potential interview questions you might be asked.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-[400px] w-full pr-4">
+                    <div className="space-y-6">
+                      {result.interviewQuestions.map((item: any, i: number) => (
+                        <div key={i} className="bg-slate-900/40 p-5 rounded-xl border border-white/5 space-y-3">
+                          <h4 className="font-semibold text-lg text-indigo-200">
+                            Q{i + 1}: {item.question}
+                          </h4>
+                          <div className="bg-slate-950/50 p-4 rounded-lg text-slate-300 text-sm italic border-l-2 border-slate-700">
+                            <span className="font-bold text-slate-400 not-italic block mb-1">Model Answer Tip:</span>
+                            {item.answer}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
           </div>
         )}
 
