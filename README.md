@@ -1,8 +1,8 @@
-# careerzen 🧘‍♂️🚀
+# careerzen 🧘‍♂️
 
 > **AI-Powered Resume Optimization & Interview Prep**
 
-![careerzen Hero](/public/assets/analysis_mockup.png)
+![careerzen Hero](/public/logo.png)
 
 **careerzen** is a next-generation career tool that helps you land your dream job. It uses Google's Gemini AI to analyze your resume against job descriptions, giving you a match score, ATS optimization tips, and even acts as an AI Interview Coach.
 
@@ -74,4 +74,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-© 2026 Aniruddha. Built with ❤️ and AI.
+© 2026 careerzen. Built with ❤️ and AI.
