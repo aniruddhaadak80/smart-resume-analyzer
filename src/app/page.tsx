@@ -35,7 +35,29 @@ export default function Home() {
 
   useEffect(() => {
     setIsMounted(true);
+    // Load persisted result
+    const savedResult = localStorage.getItem('careerzen_result');
+    if (savedResult) {
+      try {
+        setResult(JSON.parse(savedResult));
+      } catch (e) {
+        console.error("Failed to parse saved result", e);
+      }
+    }
   }, []);
+
+  // Save result to localStorage whenever it changes
+  useEffect(() => {
+    if (result) {
+      localStorage.setItem('careerzen_result', JSON.stringify(result));
+    }
+  }, [result]);
+
+  const clearResult = () => {
+    setResult(null);
+    localStorage.removeItem('careerzen_result');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -90,12 +112,12 @@ export default function Home() {
 
         {/* Navbar / Logo Area */}
         <header className="py-8 flex justify-center md:justify-start">
-          <div className="flex items-center gap-3">
-            <div className="relative w-10 h-10">
+          <a href="/" className="flex items-center gap-3 cursor-pointer group">
+            <div className="relative w-10 h-10 group-hover:scale-105 transition-transform">
               <Image src="/logo.png" alt="Logo" fill className="object-contain" />
             </div>
-            <span className="text-xl font-bold font-display tracking-tight">career<span className="text-teal-400">zen</span></span>
-          </div>
+            <span className="text-xl font-bold font-display tracking-tight group-hover:text-teal-100 transition-colors">career<span className="text-teal-400">zen</span></span>
+          </a>
         </header>
 
         {/* Hero Section */}
@@ -125,7 +147,7 @@ export default function Home() {
           <motion.div variants={fadeInUp} className="pt-4">
             <Button
               onClick={() => document.getElementById('analysis-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="rounded-full px-8 py-6 text-lg bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10 transition-all hover:scale-105"
+              className="rounded-full px-8 py-6 text-lg bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10 transition-all hover:scale-105 cursor-pointer"
             >
               Start Free Analysis <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -210,7 +232,7 @@ export default function Home() {
 
                     <Button
                       onClick={analyzeResume}
-                      className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold py-8 text-xl shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:shadow-[0_0_40px_rgba(20,184,166,0.5)] transition-all rounded-xl relative overflow-hidden group"
+                      className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold py-8 text-xl shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:shadow-[0_0_40px_rgba(20,184,166,0.5)] transition-all rounded-xl relative overflow-hidden group cursor-pointer"
                       disabled={loading}
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">
@@ -273,7 +295,7 @@ export default function Home() {
                     <h2 className="text-4xl font-bold font-display">Analysis Report</h2>
                     <p className="text-slate-400">Detailed insights for your profile</p>
                   </div>
-                  <Button onClick={() => setResult(null)} variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-300">
+                  <Button onClick={clearResult} variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-300 cursor-pointer">
                     Upload New Resume
                   </Button>
                 </motion.div>
@@ -331,10 +353,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950 relative z-20 py-12">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="relative w-8 h-8 opacity-80"><Image src="/logo.png" alt="logo" fill className="object-contain" /></div>
-            <span className="font-bold text-slate-500">careerzen</span>
-          </div>
+          <a href="/" className="flex items-center gap-2 cursor-pointer group">
+            <div className="relative w-8 h-8 opacity-80 group-hover:opacity-100 transition-opacity"><Image src="/logo.png" alt="logo" fill className="object-contain" /></div>
+            <span className="font-bold text-slate-500 group-hover:text-slate-300 transition-colors">careerzen</span>
+          </a>
           <div className="flex gap-6 text-slate-500">
             <Github className="h-5 w-5 hover:text-white transition-colors cursor-pointer" />
             <Twitter className="h-5 w-5 hover:text-white transition-colors cursor-pointer" />
