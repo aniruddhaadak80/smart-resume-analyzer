@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Aniruddha" }],
   icons: {
     icon: "/logo.png",
+    apple: "/logo.png",
+    shortcut: "/logo.png",
   },
 };
 
