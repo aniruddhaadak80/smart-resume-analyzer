@@ -12,13 +12,15 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Github, Twitter, Linkedin } from "lucide-react";
 import Image from "next/image";
 
+import { Variants } from "framer-motion";
+
 // Animation Variants
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
 };
