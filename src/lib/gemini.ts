@@ -1,9 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 
-// The client gets the API key from the environment variable `GEMINI_API_KEY`.
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 export const analyzeResumeWithGemini = async (resumeText: string, jobDescription?: string) => {
+    // Initialize client inside the function to avoid build-time errors
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+
     try {
         let prompt = "";
         const isJobDescProvided = jobDescription && jobDescription.trim().length > 0;
