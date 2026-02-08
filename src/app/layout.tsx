@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { ToastProvider } from "@/components/Toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ClientOnly from "@/components/ClientOnly";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -42,11 +43,15 @@ export default function RootLayout({
         >
           <ToastProvider>
             <div className="flex flex-col min-h-screen">
-              <Navbar />
+              <ClientOnly>
+                <Navbar />
+              </ClientOnly>
               <div className="flex-grow">
                 {children}
               </div>
-              <Footer />
+              <ClientOnly>
+                <Footer />
+              </ClientOnly>
             </div>
           </ToastProvider>
         </body>
