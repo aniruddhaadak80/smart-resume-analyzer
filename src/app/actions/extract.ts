@@ -48,7 +48,7 @@ export async function extractText(formData: FormData) {
                 const prompt = "Extract all text from this job description image. Maintain the structure and key details. Output only the extracted text.";
 
                 const response = await ai.models.generateContent({
-                    model: "gemini-1.5-flash",
+                    model: "gemini-3.0-flash-preview",
                     contents: [{
                         role: "user",
                         parts: [
