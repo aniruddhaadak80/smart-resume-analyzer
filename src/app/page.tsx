@@ -38,42 +38,10 @@ export default function Home() {
 
   useEffect(() => {
     setIsMounted(true);
-    // Load persisted result
-    const savedResult = localStorage.getItem('careerzen_result');
-    if (savedResult) {
-      try {
-        setResult(JSON.parse(savedResult));
-      } catch (e) {
-        console.error("Failed to parse saved result", e);
-      }
-    }
   }, []);
-
-  // Save result to localStorage whenever it changes
-  useEffect(() => {
-    if (result) {
-      localStorage.setItem('careerzen_result', JSON.stringify(result));
-
-      // Also save to history
-      const history = JSON.parse(localStorage.getItem('careerzen_history') || '[]');
-      const newEntry = {
-        id: Date.now(),
-        date: new Date().toISOString(),
-        fileName: file?.name || 'Resume',
-        result
-      };
-      // Prevent saving duplicates on re-renders by checking if the last one is identical (optional simple check)
-      const lastEntry = history[0];
-      if (!lastEntry || JSON.stringify(lastEntry.result) !== JSON.stringify(result)) {
-        history.unshift(newEntry);
-        localStorage.setItem('careerzen_history', JSON.stringify(history));
-      }
-    }
-  }, [result]);
 
   const clearResult = () => {
     setResult(null);
-    localStorage.removeItem('careerzen_result');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

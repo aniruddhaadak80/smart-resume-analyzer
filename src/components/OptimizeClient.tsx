@@ -119,19 +119,9 @@ export default function OptimizeClient() {
         }
     };
 
-    // Load from localStorage if available
+    // Load effects
     useEffect(() => {
-        const stored = localStorage.getItem('careerzen_optimize_data');
-        if (stored) {
-            try {
-                const data = JSON.parse(stored);
-                setResumeText(data.resumeText || '');
-                setJobDescription(data.jobDescription || '');
-                setFileName(data.fileName || 'Resume');
-            } catch (e) {
-                console.error('Error loading stored data:', e);
-            }
-        }
+        // Ready
     }, []);
 
     const handleOptimize = async () => {

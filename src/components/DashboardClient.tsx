@@ -24,19 +24,8 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
     const { showToast } = useToast();
 
     useEffect(() => {
-        // Merge server history with local history (for guest/local items)
-        const localHistory = JSON.parse(localStorage.getItem('careerzen_history') || '[]');
-
-        // Combine them (tagging source)
-        // For local items, we use the timestamp as a temporary ID for UI tracking
-        const combined = [
-            ...serverHistory.map(h => ({ ...h, source: 'cloud' })),
-            ...localHistory.map((h: any) => ({
-                ...h,
-                source: 'local',
-                id: h.id || `local-${new Date(h.date || h.createdAt).getTime()}`
-            }))
-        ].sort((a, b) => new Date(b.createdAt || b.date).getTime() - new Date(a.createdAt || a.date).getTime());
+        const combined = serverHistory.map(h => ({ ...h, source: 'cloud' }))
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
         setHistory(combined);
         setFilteredHistory(combined);
@@ -117,9 +106,6 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
     const handleView = (item: any) => {
         if (item.source === 'cloud' && item.id) {
             router.push(`/resume/${item.id}`);
-        } else if (item.source === 'local') {
-            localStorage.setItem('careerzen_result', JSON.stringify(item.result));
-            router.push('/');
         }
     };
 
@@ -168,22 +154,6 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
             } catch (error) {
                 showToast('Failed to rename.', 'error');
             }
-        } else {
-            // Handle local rename
-            const localHistory = JSON.parse(localStorage.getItem('careerzen_history') || '[]');
-            const index = localHistory.findIndex((h: any) =>
-                (h.id === id) || (h.date === item.date && h.fileName === item.fileName)
-            );
-
-            if (index !== -1) {
-                localHistory[index].fileName = editValue;
-                localStorage.setItem('careerzen_history', JSON.stringify(localHistory));
-
-                setHistory(prev => prev.map(h => h.id === id ? { ...h, fileName: editValue } : h));
-                setFilteredHistory(prev => prev.map(h => h.id === id ? { ...h, fileName: editValue } : h));
-                setEditingId(null);
-                showToast('Local resume renamed!', 'success');
-            }
         }
     };
 
@@ -205,18 +175,6 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
             } catch (error) {
                 showToast('Failed to delete.', 'error');
             }
-        } else {
-            // Handle local delete
-            const localHistory = JSON.parse(localStorage.getItem('careerzen_history') || '[]');
-            const updated = localHistory.filter((h: any) =>
-                !((h.id === id) || (h.date === item.date && h.fileName === item.fileName))
-            );
-
-            localStorage.setItem('careerzen_history', JSON.stringify(updated));
-            setHistory(prev => prev.filter(h => h.id !== id));
-            setFilteredHistory(prev => prev.filter(h => h.id !== id));
-            setDeletingId(null);
-            showToast('Local resume deleted!', 'success');
         }
     };
 

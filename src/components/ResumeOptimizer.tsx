@@ -79,12 +79,6 @@ export default function ResumeOptimizer({ resumeText, jobDescription, originalFi
 
     // Function to open full-page optimizer
     const openFullPageOptimizer = () => {
-        // Store data for full-page optimizer
-        localStorage.setItem('careerzen_optimize_data', JSON.stringify({
-            resumeText,
-            jobDescription,
-            fileName: originalFileName
-        }));
         window.location.href = '/optimize';
     };
 
