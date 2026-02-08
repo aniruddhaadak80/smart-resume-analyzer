@@ -54,7 +54,7 @@ export const analyzeResumeWithGemini = async (resumeText: string, jobDescription
         `;
 
         const response = await ai.models.generateContent({
-            model: "gemini-3.0-flash-preview",
+            model: "gemini-3-flash-preview",
             contents: prompt,
         });
 
@@ -66,7 +66,7 @@ export const analyzeResumeWithGemini = async (resumeText: string, jobDescription
         return JSON.parse(cleanedText);
 
     } catch (error) {
-        console.error("Error analyzing with Gemini:", error);
-        throw new Error("Failed to analyze resume with Gemini AI");
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error(`Gemini Analysis Failed: ${errorMessage}`);
     }
 };

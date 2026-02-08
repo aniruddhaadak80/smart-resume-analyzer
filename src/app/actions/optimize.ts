@@ -81,7 +81,7 @@ export async function optimizeResume(resumeText: string, jobDescription: string)
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3.0-flash-preview",
+      model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -93,8 +93,8 @@ export async function optimizeResume(resumeText: string, jobDescription: string)
 
     return { success: true, data: JSON.parse(text) };
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Optimization Error:", error);
-    return { success: false, error: "Failed to optimize resume." };
+    return { success: false, error: error.message || "Failed to optimize resume." };
   }
 }
