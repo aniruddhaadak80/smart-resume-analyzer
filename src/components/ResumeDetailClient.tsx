@@ -27,14 +27,14 @@ interface Resume {
     id: string;
     fileName: string;
     jobTitle: string | null;
-    matchScore: number;
-    content: string;
+    matchScore: number | null;
+    content: string | null;
     createdAt: Date;
 }
 
 export default function ResumeDetailClient({ resume }: { resume: Resume }) {
     const [isDownloading, setIsDownloading] = useState<'PDF' | 'DOCX' | null>(null);
-    const data = JSON.parse(resume.content);
+    const data = resume.content ? JSON.parse(resume.content) : {};
 
     const handleDownload = async (format: 'PDF' | 'DOCX') => {
         setIsDownloading(format);
@@ -82,7 +82,7 @@ export default function ResumeDetailClient({ resume }: { resume: Resume }) {
                             </span>
                             <span className="flex items-center gap-1">
                                 <Award className="h-4 w-4 text-emerald-400" />
-                                <span className="text-emerald-400 font-bold">{resume.matchScore}% Match</span>
+                                <span className="text-emerald-400 font-bold">{resume.matchScore || 0}% Match</span>
                             </span>
                         </div>
                     </div>
