@@ -40,7 +40,7 @@ Get actionable feedback and prep for your interview.
 
 - **Framework**: Next.js 16 (App Router)
 - **Styling**: Tailwind CSS v4 + Framer Motion + Glassmorphism
-- **AI Engine**: Google Gemini 3.0 Flash Preview & Gemini 1.5 Flash (Vision/OCR)
+- **AI Engine**: Google Gemini-3-Flash-Preview (Vision/OCR)
 - **Database**: Prisma + PostgreSQL (Cloud) / LocalStorage (Client)
 - **Auth**: Clerk Authentication
 - **Parsing**: `pdf2json`, `mammoth` & AI-driven Multimodal Extraction
