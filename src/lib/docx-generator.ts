@@ -11,11 +11,11 @@ const colors = {
 };
 
 export const generateDocx = async (data: any) => {
-    // Helper for creating styled text - smaller sizes for single page
+    // Helper for created text - VERY compact sizes (half-points: 14 = 7pt, 16 = 8pt, 18 = 9pt, 20 = 10pt)
     const createText = (text: string, options: any = {}) => new TextRun({
         text,
         font: "Arial",
-        size: options.size || 16,
+        size: options.size || 16, // Default to 8pt
         bold: options.bold || false,
         color: options.color || colors.text,
         ...options,
@@ -23,8 +23,8 @@ export const generateDocx = async (data: any) => {
 
     // Helper for section headers in sidebar - compact
     const sidebarSectionHeader = (text: string) => new Paragraph({
-        children: [createText(text, { bold: true, color: colors.accent, size: 16 })],
-        spacing: { before: 120, after: 60 },
+        children: [createText(text, { bold: true, color: colors.accent, size: 14 })], // 7pt header
+        spacing: { before: 60, after: 30 }, // Reduced spacing
         border: {
             bottom: { style: BorderStyle.SINGLE, size: 4, color: colors.accent },
         },
@@ -32,8 +32,8 @@ export const generateDocx = async (data: any) => {
 
     // Helper for section headers in main - compact
     const mainSectionHeader = (text: string) => new Paragraph({
-        children: [createText(text, { bold: true, color: colors.secondary, size: 18 })],
-        spacing: { before: 120, after: 60 },
+        children: [createText(text, { bold: true, color: colors.secondary, size: 16 })], // 8pt header
+        spacing: { before: 80, after: 40 }, // Reduced spacing
         border: {
             bottom: { style: BorderStyle.SINGLE, size: 6, color: colors.secondary },
         },
@@ -46,18 +46,18 @@ export const generateDocx = async (data: any) => {
             children: [createText(data.fullName?.toUpperCase() || "YOUR NAME", {
                 bold: true,
                 color: colors.white,
-                size: 24,
+                size: 20, // 10pt Name
             })],
-            spacing: { after: 30 },
+            spacing: { after: 20 },
         }),
         // Title
         new Paragraph({
             children: [createText(data.experience?.[0]?.role?.toUpperCase() || "PROFESSIONAL", {
                 bold: true,
                 color: colors.accent,
-                size: 14,
+                size: 12, // 6pt Title
             })],
-            spacing: { after: 100 },
+            spacing: { after: 60 },
         }),
 
         // Contact Section
@@ -68,17 +68,17 @@ export const generateDocx = async (data: any) => {
     if (data.contactInfo?.email) {
         sidebarContent.push(
             new Paragraph({
-                children: [createText("Email", { color: "94a3b8", size: 16 })],
-                spacing: { before: 50 },
+                children: [createText("Email", { color: "94a3b8", size: 12 })], // 6pt Label
+                spacing: { before: 30 },
             }),
             new Paragraph({
                 children: [
                     new ExternalHyperlink({
-                        children: [createText(data.contactInfo.email, { color: colors.accent, size: 18 })],
+                        children: [createText(data.contactInfo.email, { color: colors.accent, size: 14 })], // 7pt Value
                         link: `mailto:${data.contactInfo.email}`,
                     }),
                 ],
-                spacing: { after: 100 },
+                spacing: { after: 40 },
             })
         );
     }
@@ -86,16 +86,16 @@ export const generateDocx = async (data: any) => {
     if (data.contactInfo?.phone) {
         sidebarContent.push(
             new Paragraph({
-                children: [createText("Phone", { color: "94a3b8", size: 16 })],
+                children: [createText("Phone", { color: "94a3b8", size: 12 })],
             }),
             new Paragraph({
                 children: [
                     new ExternalHyperlink({
-                        children: [createText(data.contactInfo.phone, { color: colors.accent, size: 18 })],
+                        children: [createText(data.contactInfo.phone, { color: colors.accent, size: 14 })],
                         link: `tel:${data.contactInfo.phone}`,
                     }),
                 ],
-                spacing: { after: 100 },
+                spacing: { after: 40 },
             })
         );
     }
@@ -106,16 +106,16 @@ export const generateDocx = async (data: any) => {
             : `https://${data.contactInfo.linkedin}`;
         sidebarContent.push(
             new Paragraph({
-                children: [createText("LinkedIn", { color: "94a3b8", size: 16 })],
+                children: [createText("LinkedIn", { color: "94a3b8", size: 12 })],
             }),
             new Paragraph({
                 children: [
                     new ExternalHyperlink({
-                        children: [createText(data.contactInfo.linkedin.replace('https://', '').replace('www.', ''), { color: colors.accent, size: 18, underline: {} })],
+                        children: [createText(data.contactInfo.linkedin.replace('https://', '').replace('www.', ''), { color: colors.accent, size: 14, underline: {} })],
                         link: linkedinUrl,
                     }),
                 ],
-                spacing: { after: 100 },
+                spacing: { after: 40 },
             })
         );
     }
@@ -126,16 +126,16 @@ export const generateDocx = async (data: any) => {
             : `https://${data.contactInfo.website}`;
         sidebarContent.push(
             new Paragraph({
-                children: [createText("Portfolio", { color: "94a3b8", size: 16 })],
+                children: [createText("Portfolio", { color: "94a3b8", size: 12 })],
             }),
             new Paragraph({
                 children: [
                     new ExternalHyperlink({
-                        children: [createText(data.contactInfo.website.replace('https://', '').replace('www.', ''), { color: colors.accent, size: 18, underline: {} })],
+                        children: [createText(data.contactInfo.website.replace('https://', '').replace('www.', ''), { color: colors.accent, size: 14, underline: {} })],
                         link: websiteUrl,
                     }),
                 ],
-                spacing: { after: 100 },
+                spacing: { after: 40 },
             })
         );
     }
@@ -143,11 +143,11 @@ export const generateDocx = async (data: any) => {
     if (data.contactInfo?.location) {
         sidebarContent.push(
             new Paragraph({
-                children: [createText("Location", { color: "94a3b8", size: 16 })],
+                children: [createText("Location", { color: "94a3b8", size: 12 })],
             }),
             new Paragraph({
-                children: [createText(data.contactInfo.location, { color: colors.white, size: 18 })],
-                spacing: { after: 100 },
+                children: [createText(data.contactInfo.location, { color: colors.white, size: 14 })],
+                spacing: { after: 40 },
             })
         );
     }
@@ -157,8 +157,8 @@ export const generateDocx = async (data: any) => {
 
     const skillsText = data.skills?.map((skill: string) => `• ${skill}`).join('\n') || '';
     sidebarContent.push(new Paragraph({
-        children: [createText(skillsText, { color: colors.white, size: 17 })],
-        spacing: { after: 150 },
+        children: [createText(skillsText, { color: colors.white, size: 13 })], // 6.5pt Skills
+        spacing: { after: 80 },
     }));
 
     // Education Section
@@ -168,15 +168,15 @@ export const generateDocx = async (data: any) => {
         data.education.forEach((edu: any) => {
             sidebarContent.push(
                 new Paragraph({
-                    children: [createText(edu.degree, { bold: true, color: colors.white, size: 18 })],
-                    spacing: { before: 80 },
+                    children: [createText(edu.degree, { bold: true, color: colors.white, size: 14 })],
+                    spacing: { before: 40 },
                 }),
                 new Paragraph({
-                    children: [createText(edu.institution, { color: colors.accent, size: 17 })],
+                    children: [createText(edu.institution, { color: colors.accent, size: 13 })],
                 }),
                 new Paragraph({
-                    children: [createText(`${edu.date}${edu.gpa ? ` • GPA: ${edu.gpa}` : ''}`, { color: "94a3b8", size: 16 })],
-                    spacing: { after: 100 },
+                    children: [createText(`${edu.date}${edu.gpa ? ` • GPA: ${edu.gpa}` : ''}`, { color: "94a3b8", size: 12 })],
+                    spacing: { after: 60 },
                 })
             );
         });
@@ -189,17 +189,17 @@ export const generateDocx = async (data: any) => {
         data.projects.forEach((project: any) => {
             sidebarContent.push(
                 new Paragraph({
-                    children: [createText(project.name, { bold: true, color: colors.white, size: 18 })],
-                    spacing: { before: 80 },
+                    children: [createText(project.name, { bold: true, color: colors.white, size: 14 })],
+                    spacing: { before: 40 },
                 }),
                 new Paragraph({
-                    children: [createText(project.description?.substring(0, 100) + (project.description?.length > 100 ? '...' : ''), { color: "cbd5e1", size: 16 })],
+                    children: [createText(project.description?.substring(0, 100) + (project.description?.length > 100 ? '...' : ''), { color: "cbd5e1", size: 12 })],
                 }),
             );
             if (project.techStack) {
                 sidebarContent.push(new Paragraph({
-                    children: [createText(project.techStack.join(' • '), { color: colors.accent, size: 15 })],
-                    spacing: { after: 100 },
+                    children: [createText(project.techStack.join(' • '), { color: colors.accent, size: 11 })],
+                    spacing: { after: 60 },
                 }));
             }
         });
@@ -210,7 +210,7 @@ export const generateDocx = async (data: any) => {
         sidebarContent.push(sidebarSectionHeader("CERTIFICATIONS"));
         data.certifications.forEach((cert: string) => {
             sidebarContent.push(new Paragraph({
-                children: [createText(`• ${cert}`, { color: colors.white, size: 17 })],
+                children: [createText(`• ${cert}`, { color: colors.white, size: 13 })],
             }));
         });
     }
@@ -220,7 +220,7 @@ export const generateDocx = async (data: any) => {
         sidebarContent.push(sidebarSectionHeader("LANGUAGES"));
         data.languages.forEach((lang: string) => {
             sidebarContent.push(new Paragraph({
-                children: [createText(`• ${lang}`, { color: colors.white, size: 17 })],
+                children: [createText(`• ${lang}`, { color: colors.white, size: 13 })],
             }));
         });
     }
@@ -230,8 +230,8 @@ export const generateDocx = async (data: any) => {
         // Professional Summary
         mainSectionHeader("PROFESSIONAL SUMMARY"),
         new Paragraph({
-            children: [createText(data.professionalSummary || '', { size: 21 })],
-            spacing: { after: 200 },
+            children: [createText(data.professionalSummary || '', { size: 18 })], // 9pt Summary
+            spacing: { after: 100 },
             alignment: AlignmentType.JUSTIFIED,
         }),
 
@@ -243,25 +243,25 @@ export const generateDocx = async (data: any) => {
     data.experience?.forEach((exp: any) => {
         mainContent.push(
             new Paragraph({
-                children: [createText(exp.role, { bold: true, color: colors.primary, size: 23 })],
-                spacing: { before: 150 },
+                children: [createText(exp.role, { bold: true, color: colors.primary, size: 18 })], // 9pt Role
+                spacing: { before: 80 },
             }),
             new Paragraph({
-                children: [createText(exp.company, { bold: true, color: colors.secondary, size: 21 })],
+                children: [createText(exp.company, { bold: true, color: colors.secondary, size: 16 })], // 8pt Company
             }),
             new Paragraph({
-                children: [createText(`${exp.date}${exp.location ? ` • ${exp.location}` : ''}`, { color: colors.textLight, size: 18 })],
-                spacing: { after: 80 },
+                children: [createText(`${exp.date}${exp.location ? ` • ${exp.location}` : ''}`, { color: colors.textLight, size: 14 })], // 7pt Date
+                spacing: { after: 30 },
             }),
         );
 
         exp.description?.forEach((bullet: string) => {
             mainContent.push(new Paragraph({
                 children: [
-                    createText("▸ ", { bold: true, color: colors.secondary, size: 20 }),
-                    createText(bullet, { size: 20 }),
+                    createText("▸ ", { bold: true, color: colors.secondary, size: 16 }),
+                    createText(bullet, { size: 16 }), // 8pt Body
                 ],
-                spacing: { after: 50, before: 30 },
+                spacing: { after: 20, before: 10 },
                 indent: { left: convertInchesToTwip(0.15) },
             }));
         });
@@ -273,10 +273,10 @@ export const generateDocx = async (data: any) => {
         data.achievements.forEach((achievement: string) => {
             mainContent.push(new Paragraph({
                 children: [
-                    createText("★ ", { bold: true, color: colors.secondary, size: 20 }),
-                    createText(achievement, { size: 20 }),
+                    createText("★ ", { bold: true, color: colors.secondary, size: 16 }),
+                    createText(achievement, { size: 16 }), // 8pt Body
                 ],
-                spacing: { after: 50 },
+                spacing: { after: 20 },
                 indent: { left: convertInchesToTwip(0.15) },
             }));
         });
@@ -288,10 +288,10 @@ export const generateDocx = async (data: any) => {
             properties: {
                 page: {
                     margin: {
-                        top: convertInchesToTwip(0.4),
-                        right: convertInchesToTwip(0.4),
-                        bottom: convertInchesToTwip(0.4),
-                        left: convertInchesToTwip(0.4),
+                        top: convertInchesToTwip(0.3), // Reduced margins
+                        right: convertInchesToTwip(0.3),
+                        bottom: convertInchesToTwip(0.3),
+                        left: convertInchesToTwip(0.3),
                     },
                 },
             },

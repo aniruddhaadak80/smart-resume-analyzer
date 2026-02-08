@@ -20,142 +20,142 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         fontFamily: 'Helvetica',
     },
-    // Left Sidebar - Wider for balance
+    // Left Sidebar - Compact
     sidebar: {
-        width: '32%',
+        width: '30%',
         backgroundColor: colors.primary,
-        paddingVertical: 18,
-        paddingHorizontal: 14,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
         color: colors.white,
     },
-    // Right Main Content
+    // Right Main Content - Compact
     main: {
-        width: '68%',
-        paddingVertical: 18,
-        paddingHorizontal: 20,
+        width: '70%',
+        paddingVertical: 12,
+        paddingHorizontal: 16,
         backgroundColor: colors.white,
     },
-    // Name Section - BIGGER
+    // Name Section - Compact but visible
     name: {
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
         color: colors.white,
-        marginBottom: 4,
+        marginBottom: 2,
         textTransform: 'uppercase',
-        letterSpacing: 1.5,
+        letterSpacing: 1,
     },
     title: {
-        fontSize: 10,
+        fontSize: 8,
         color: colors.accent,
         fontWeight: 'bold',
-        marginBottom: 12,
+        marginBottom: 8,
         letterSpacing: 0.5,
     },
-    // Section Titles - Clear separation
+    // Section Titles - minimal spacing
     sectionTitle: {
-        fontSize: 10,
+        fontSize: 9,
         fontWeight: 'bold',
         color: colors.accent,
-        marginBottom: 8,
-        marginTop: 14,
+        marginBottom: 4,
+        marginTop: 10,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+        borderBottomWidth: 0.5,
+        borderBottomColor: colors.accent,
+        paddingBottom: 2,
+    },
+    sectionTitleMain: {
+        fontSize: 11,
+        fontWeight: 'bold',
+        color: colors.secondary,
+        marginBottom: 6,
+        marginTop: 8,
         textTransform: 'uppercase',
         letterSpacing: 1,
         borderBottomWidth: 1,
-        borderBottomColor: colors.accent,
-        paddingBottom: 4,
-    },
-    sectionTitleMain: {
-        fontSize: 13,
-        fontWeight: 'bold',
-        color: colors.secondary,
-        marginBottom: 10,
-        marginTop: 12,
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-        borderBottomWidth: 2,
         borderBottomColor: colors.secondary,
-        paddingBottom: 5,
+        paddingBottom: 3,
     },
-    // Contact Items - Better spacing
+    // Contact Items - Tight
     contactRow: {
-        marginBottom: 6,
+        marginBottom: 3,
     },
     contactLabel: {
-        fontSize: 7,
+        fontSize: 6,
         color: '#94a3b8',
-        marginBottom: 1,
+        marginBottom: 0,
     },
     contactValue: {
-        fontSize: 8,
+        fontSize: 7,
         color: colors.white,
     },
     contactLink: {
-        fontSize: 8,
+        fontSize: 7,
         color: colors.accent,
         textDecoration: 'none',
     },
-    // Skills - Larger tags
+    // Skills - Compact tags
     skillsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 4,
+        gap: 3,
     },
     skillTag: {
-        fontSize: 7.5,
+        fontSize: 6.5,
         color: colors.white,
         backgroundColor: 'rgba(14, 165, 233, 0.3)',
-        paddingHorizontal: 6,
-        paddingVertical: 3,
-        borderRadius: 3,
-        marginBottom: 4,
-        marginRight: 4,
+        paddingHorizontal: 4,
+        paddingVertical: 2,
+        borderRadius: 2,
+        marginBottom: 3,
+        marginRight: 3,
     },
-    // Education - Better structure
+    // Education - minimal
     eduItem: {
-        marginBottom: 8,
+        marginBottom: 5,
     },
     eduDegree: {
-        fontSize: 9,
+        fontSize: 8,
         fontWeight: 'bold',
         color: colors.white,
     },
     eduSchool: {
-        fontSize: 8,
+        fontSize: 7,
         color: colors.accent,
-        marginTop: 1,
+        marginTop: 0,
     },
     eduDate: {
-        fontSize: 7,
+        fontSize: 6,
         color: '#94a3b8',
-        marginTop: 1,
+        marginTop: 0,
     },
-    // Experience - LARGER with line spacing
+    // Experience - Compact list
     expItem: {
-        marginBottom: 14,
+        marginBottom: 8,
     },
     expRole: {
-        fontSize: 12,
+        fontSize: 10,
         fontWeight: 'bold',
         color: colors.primary,
     },
     expCompany: {
-        fontSize: 11,
+        fontSize: 9,
         fontWeight: 'bold',
         color: colors.secondary,
-        marginTop: 2,
+        marginTop: 1,
     },
     expMeta: {
-        fontSize: 9,
+        fontSize: 8,
         color: colors.textLight,
-        marginTop: 2,
-        marginBottom: 6,
+        marginTop: 1,
+        marginBottom: 3,
     },
     expBullet: {
-        fontSize: 10,
+        fontSize: 9,
         color: colors.text,
-        marginLeft: 10,
-        marginBottom: 6,
-        lineHeight: 1.5,
+        marginLeft: 8,
+        marginBottom: 3,
+        lineHeight: 1.3,
     },
     bulletPoint: {
         color: colors.secondary,
@@ -166,47 +166,48 @@ const styles = StyleSheet.create({
         color: colors.secondary,
         fontWeight: 'bold',
     },
-    // Summary - BIGGER with line height
+    // Summary - Compact
     summary: {
-        fontSize: 10.5,
+        fontSize: 9,
         color: colors.text,
-        lineHeight: 1.6,
+        lineHeight: 1.3,
         textAlign: 'justify',
-    },
-    // Projects - Compact
-    projectItem: {
         marginBottom: 6,
     },
+    // Projects - Very Compact
+    projectItem: {
+        marginBottom: 4,
+    },
     projectName: {
-        fontSize: 8.5,
+        fontSize: 7.5,
         fontWeight: 'bold',
         color: colors.white,
     },
     projectDesc: {
-        fontSize: 7,
+        fontSize: 6.5,
         color: '#cbd5e1',
-        lineHeight: 1.3,
-        marginTop: 2,
+        lineHeight: 1.2,
+        marginTop: 1,
     },
     projectTech: {
-        fontSize: 7,
+        fontSize: 6.5,
         color: colors.accent,
-        marginTop: 2,
+        marginTop: 1,
     },
     // Small items
     smallItem: {
-        fontSize: 7.5,
+        fontSize: 7,
         color: colors.white,
-        marginBottom: 3,
-        lineHeight: 1.3,
+        marginBottom: 2,
+        lineHeight: 1.2,
     },
-    // Achievement - LARGER
+    // Achievement - Compact
     achievementBullet: {
-        fontSize: 10,
+        fontSize: 9,
         color: colors.text,
-        marginLeft: 10,
-        marginBottom: 8,
-        lineHeight: 1.5,
+        marginLeft: 8,
+        marginBottom: 4,
+        lineHeight: 1.3,
     },
     achieveStar: {
         color: colors.highlight,
@@ -223,7 +224,7 @@ export const ResumePDF = ({ data }: { data: any }) => {
     return (
         <Document>
             <Page size="A4" style={styles.page}>
-                {/* Left Sidebar */}
+                {/* Left Sidebar - Compact */}
                 <View style={styles.sidebar}>
                     {/* Name & Title */}
                     <Text style={styles.name}>{data.fullName}</Text>
@@ -340,7 +341,7 @@ export const ResumePDF = ({ data }: { data: any }) => {
                     )}
                 </View>
 
-                {/* Right Main Content */}
+                {/* Right Main Content - Compact */}
                 <View style={styles.main}>
                     {/* Professional Summary - LARGER */}
                     <Text style={styles.sectionTitleMain}>Professional Summary</Text>
