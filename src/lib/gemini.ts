@@ -49,7 +49,7 @@ export const analyzeResumeWithGemini = async (resumeText: string, jobDescription
             ]
         }
         
-        Provide exactly 5 interviewQuestions.
+        Provide between 10 to 20 unique interviewQuestions. Mix technical, behavioral, and situational questions.
         IMPORTANT: Return ONLY raw JSON. Do not include markdown formatting.
         `;
 

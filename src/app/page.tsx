@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Github, Twitter, Linkedin, Globe, Mail, Code2, Terminal, Send, Link as LinkIcon, Cpu } from "lucide-react";
 import Image from "next/image";
+import InterviewCoach from "@/components/InterviewCoach";
 
 import { Variants } from "framer-motion";
 
@@ -373,30 +374,11 @@ export default function Home() {
                 </div>
 
                 {result.interviewQuestions && (
-                  <motion.div variants={fadeInUp}>
-                    <Card className="glass-card border-t-4 border-t-teal-500">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-2xl font-display">
-                          <CheckCircle2 className="text-teal-400" /> AI Interview Coach
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ScrollArea className="h-[400px] w-full pr-4">
-                          <div className="space-y-6">
-                            {result.interviewQuestions.map((q: any, i: number) => (
-                              <div key={i} className="bg-slate-950/30 p-6 rounded-xl border border-slate-800/50">
-                                <h4 className="text-lg font-semibold text-teal-200 mb-3">Q{i + 1}: {q.question}</h4>
-                                <div className="text-slate-400 text-sm italic border-l-2 border-slate-700 pl-4 py-1">
-                                  <span className="font-bold text-slate-500 not-italic block mb-1">Tip:</span>
-                                  {q.answer}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </ScrollArea>
-                      </CardContent>
-                    </Card>
+
+                  <motion.div variants={fadeInUp} className="w-full">
+                    <InterviewCoach questions={result.interviewQuestions} />
                   </motion.div>
+
                 )}
               </motion.div>
             )}
