@@ -15,18 +15,9 @@ export async function extractText(formData: FormData) {
 
         if (file.type === "application/pdf") {
             try {
-                // Using pdf2json as it was already configured in the analyze API
-                const PDFParser = require("pdf2json");
-                const pdfParser = new PDFParser(null, 1); // 1 = text only
-
-                extractedText = await new Promise((resolve, reject) => {
-                    pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError));
-                    pdfParser.on("pdfParser_dataReady", () => {
-                        const rawText = pdfParser.getRawTextContent();
-                        resolve(rawText);
-                    });
-                    pdfParser.parseBuffer(buffer);
-                });
+                const pdf = require("pdf-parse");
+                const data = await pdf(buffer);
+                extractedText = data.text;
             } catch (pdfError) {
                 console.error("PDF Parsing failed:", pdfError);
                 return { success: false, error: "Failed to parse PDF." };
@@ -48,7 +39,7 @@ export async function extractText(formData: FormData) {
                 const prompt = "Extract all text from this job description image. Maintain the structure and key details. Output only the extracted text.";
 
                 const response = await ai.models.generateContent({
-                    model: "gemini-3.0-flash-preview",
+                    model: "gemini-3-flash-preview",
                     contents: [{
                         role: "user",
                         parts: [

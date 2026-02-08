@@ -23,20 +23,9 @@ export async function POST(req: NextRequest) {
 
         if (file.type === "application/pdf") {
             try {
-                const PDFParser = require("pdf2json");
-                const pdfParser = new PDFParser(null, 1); // 1 = text only
-
-                resumeText = await new Promise((resolve, reject) => {
-                    pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError));
-                    pdfParser.on("pdfParser_dataReady", (pdfData: any) => {
-                        // Extract text from the JSON structure
-                        // pdf2json returns URL-encoded text
-                        const rawText = pdfParser.getRawTextContent();
-                        resolve(rawText);
-                    });
-
-                    pdfParser.parseBuffer(buffer);
-                });
+                const pdf = require("pdf-parse");
+                const data = await pdf(buffer);
+                resumeText = data.text;
             } catch (pdfError) {
                 console.error("PDF Parsing failed:", pdfError);
                 return NextResponse.json({ error: "Failed to parse PDF." }, { status: 500 });
@@ -52,8 +41,8 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ ...analysisResults, resumeText }); // Return raw text for future re-use
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Analysis Error:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
     }
 }
