@@ -15,12 +15,35 @@ export async function extractText(formData: FormData) {
 
         if (file.type === "application/pdf") {
             try {
-                const pdf = require("pdf-parse");
-                const data = await pdf(buffer);
-                extractedText = data.text;
-            } catch (pdfError) {
+                const PDFParser = require("pdf2json");
+                const pdfParser = new PDFParser(null, 1);
+
+                extractedText = await new Promise((resolve, reject) => {
+                    pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError));
+                    pdfParser.on("pdfParser_dataReady", (pdfData: any) => {
+                        try {
+                            // Custom text extraction to fix spacing issues
+                            let text = "";
+                            pdfData.formImage.Pages.forEach((page: any) => {
+                                page.Texts.forEach((item: any) => {
+                                    item.R.forEach((t: any) => {
+                                        // decode and append with space
+                                        text += decodeURIComponent(t.T) + " ";
+                                    });
+                                });
+                                text += "\n";
+                            });
+                            resolve(text);
+                        } catch (e) {
+                            // Fallback
+                            resolve(pdfParser.getRawTextContent());
+                        }
+                    });
+                    pdfParser.parseBuffer(buffer);
+                });
+            } catch (pdfError: any) {
                 console.error("PDF Parsing failed:", pdfError);
-                return { success: false, error: "Failed to parse PDF." };
+                return { success: false, error: `Failed to parse PDF: ${pdfError.message}` };
             }
         }
         else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
