@@ -14,6 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import InterviewCoach from "@/components/InterviewCoach";
 import ResumeOptimizer from "@/components/ResumeOptimizer";
+import LoadingText from "@/components/LoadingText";
 
 import { Variants } from "framer-motion";
 
@@ -27,6 +28,14 @@ const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
 };
+
+const LOADING_MESSAGES = [
+  "Scanning for ATS compatibility...",
+  "Analyzing impact verbs...",
+  "Detecting missing keywords...",
+  "Comparing against top industry standards...",
+  "Formatting structure..."
+];
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -211,8 +220,27 @@ export default function Home() {
                       className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold py-8 text-xl shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:shadow-[0_0_40px_rgba(20,184,166,0.5)] transition-all rounded-xl relative overflow-hidden group cursor-pointer"
                       disabled={loading}
                     >
-                      <span className="relative z-10 flex items-center justify-center gap-2">
-                        {loading ? <Loader2 className="animate-spin" /> : <>Run Analysis <ArrowRight className="group-hover:translate-x-1 transition-transform" /></>}
+                      <span className="relative z-10 flex items-center justify-center gap-2 w-full">
+                        {loading ? (
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="flex items-center gap-2">
+                              <Loader2 className="animate-spin h-5 w-5" />
+                              <span>Analyzing...</span>
+                            </div>
+                            <LoadingText
+                              messages={[
+                                "Scanning for ATS compatibility...",
+                                "Analyzing impact verbs...",
+                                "Detecting missing keywords...",
+                                "Comparing against top industry standards...",
+                                "Formatting structure..."
+                              ]}
+                              className="text-sm font-normal text-teal-100/80"
+                            />
+                          </div>
+                        ) : (
+                          <>Run Analysis <ArrowRight className="group-hover:translate-x-1 transition-transform" /></>
+                        )}
                       </span>
                     </Button>
                   </CardContent>

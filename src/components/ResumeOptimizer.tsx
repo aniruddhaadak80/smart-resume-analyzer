@@ -13,6 +13,7 @@ import { pdf } from '@react-pdf/renderer';
 import { ResumePDF } from './ResumePDF';
 import { useToast } from './Toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import LoadingText from './LoadingText';
 
 // Skill color palette - unique gradients for each skill
 const skillColors = [
@@ -26,6 +27,14 @@ const skillColors = [
     { bg: 'from-lime-900/50 to-green-900/50', text: 'text-lime-300', border: 'border-lime-500/30', hover: 'hover:border-lime-400/50 hover:bg-lime-800/40' },
     { bg: 'from-yellow-900/50 to-amber-900/50', text: 'text-yellow-300', border: 'border-yellow-500/30', hover: 'hover:border-yellow-400/50 hover:bg-yellow-800/40' },
     { bg: 'from-red-900/50 to-rose-900/50', text: 'text-red-300', border: 'border-red-500/30', hover: 'hover:border-red-400/50 hover:bg-red-800/40' },
+];
+
+const OPTIMIZATION_MESSAGES = [
+    "Rewriting summary for maximum hook...",
+    "Injecting 15+ missing keywords...",
+    "Qualifying achievements with metrics...",
+    "Polishing grammar and tone...",
+    "Finalizing your 100% match score..."
 ];
 
 // Function to highlight keywords in summary
@@ -261,7 +270,19 @@ export default function ResumeOptimizer({ resumeText, jobDescription, originalFi
                                     {isOptimizing ? (
                                         <>
                                             <Loader2 className="h-5 w-5 animate-spin" />
-                                            Optimizing Your Resume...
+                                            <div className="flex flex-col items-start text-left">
+                                                <span>Optimizing Your Resume...</span>
+                                                <LoadingText
+                                                    messages={[
+                                                        "Rewriting summary for maximum hook...",
+                                                        "Injecting 15+ missing keywords...",
+                                                        "Qualifying achievements with metrics...",
+                                                        "Polishing grammar and tone...",
+                                                        "Finalizing your 100% match score..."
+                                                    ]}
+                                                    className="text-xs font-normal text-white/70 h-4"
+                                                />
+                                            </div>
                                         </>
                                     ) : (
                                         <>
