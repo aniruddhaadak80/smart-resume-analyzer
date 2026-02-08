@@ -9,10 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Github, Twitter, Linkedin, Globe, Mail, Code2, Terminal, Send, Link as LinkIcon, Cpu } from "lucide-react";
+import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Github } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import InterviewCoach from "@/components/InterviewCoach";
+import ResumeOptimizer from "@/components/ResumeOptimizer";
 
 import { Variants } from "framer-motion";
 
@@ -126,55 +127,6 @@ export default function Home() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 md:px-8 relative z-10 pb-20">
-
-        {/* Navbar / Logo Area */}
-        <header className="py-8 flex justify-between items-center">
-          <a href="/" className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative w-10 h-10 group-hover:scale-105 transition-transform">
-              <Image src="/logo.png" alt="Logo" fill className="object-contain" />
-            </div>
-            <span className="text-xl font-bold font-display tracking-tight group-hover:text-teal-100 transition-colors">career<span className="text-teal-400">zen</span></span>
-          </a>
-
-          <div className="flex items-center gap-4">
-            <div className="hidden md:block mr-2">
-              <a
-                href="https://github.com/aniruddhaadak80/smart-resume-analyzer"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium rounded-full hover:scale-105 transition-transform duration-300"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 animate-gradient-xy opacity-70 blur-md group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative flex items-center px-4 py-2 bg-slate-950 rounded-full transition-all ease-in duration-75 group-hover:bg-slate-900">
-                  <Github className="w-4 h-4 mr-2 text-white group-hover:text-teal-400 transition-colors" />
-                  <span className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent font-bold group-hover:from-teal-300 group-hover:to-cyan-300">Star on GitHub</span>
-                </div>
-              </a>
-            </div>
-            <SignedOut>
-              <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-                <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50">Sign In</Button>
-              </SignInButton>
-              <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-                <Button className="bg-teal-500/10 text-teal-300 border border-teal-500/20 hover:bg-teal-500/20 rounded-full">Get Started</Button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <div className="flex items-center gap-4">
-
-                <a href="/dashboard" className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block">
-                  Dashboard
-                </a>
-                <span className="text-sm text-slate-400 hidden md:inline-block">Welcome back!</span>
-                <UserButton afterSignOutUrl="/" appearance={{
-                  elements: {
-                    avatarBox: "w-10 h-10 ring-2 ring-teal-500/20"
-                  }
-                }} />
-              </div>
-            </SignedIn>
-          </div>
-        </header>
 
         {/* Hero Section */}
         <motion.section
@@ -361,6 +313,17 @@ export default function Home() {
                   <ScoreCard title="ATS Score" score={result.atsScore} color="cyan" />
                 </div>
 
+                {/* AI Resume Optimizer - Only show if score < 100 and we have the text */}
+                {(result.matchPercentage < 100 || result.atsScore < 100) && result.resumeText && (
+                  <motion.div variants={fadeInUp} className="flex justify-center w-full py-6">
+                    <ResumeOptimizer
+                      resumeText={result.resumeText}
+                      jobDescription={jobDescription || "Standard role based on resume content."}
+                      originalFileName={file?.name || "MyResume"}
+                    />
+                  </motion.div>
+                )}
+
                 <motion.div variants={fadeInUp}>
                   <Card className="glass-card border-teal-500/10">
                     <CardHeader><CardTitle>Candidate Summary</CardTitle></CardHeader>
@@ -387,39 +350,7 @@ export default function Home() {
 
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 relative z-20 py-12">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-
-          {/* Left: Logo */}
-          <div className="flex justify-center md:justify-start">
-            <a href="/" className="flex items-center gap-2 cursor-pointer group">
-              <div className="relative w-8 h-8 opacity-80 group-hover:opacity-100 transition-opacity"><Image src="/logo.png" alt="logo" fill className="object-contain" /></div>
-              <span className="font-bold text-slate-500 group-hover:text-slate-300 transition-colors">careerzen</span>
-            </a>
-          </div>
-
-          {/* Center: Social Icons */}
-          <div className="flex flex-wrap justify-center gap-6 text-slate-500">
-            <a href="https://www.linkedin.com/in/aniruddha-adak" target="_blank" rel="noopener noreferrer" title="LinkedIn"><Linkedin className="h-5 w-5 hover:text-white transition-colors" /></a>
-            <a href="https://github.com/aniruddhaadak80" target="_blank" rel="noopener noreferrer" title="GitHub"><Github className="h-5 w-5 hover:text-white transition-colors" /></a>
-            <a href="https://x.com/aniruddhadak" target="_blank" rel="noopener noreferrer" title="Twitter / X"><Twitter className="h-5 w-5 hover:text-white transition-colors" /></a>
-            <a href="https://dev.to/aniruddhaadak" target="_blank" rel="noopener noreferrer" title="Dev Profile"><Code2 className="h-5 w-5 hover:text-white transition-colors" /></a>
-            <a href="https://codepen.io/aniruddhaadak" target="_blank" rel="noopener noreferrer" title="CodePen"><Cpu className="h-5 w-5 hover:text-white transition-colors" /></a>
-            <a href="https://aniruddha-adak.vercel.app" target="_blank" rel="noopener noreferrer" title="Portfolio"><Globe className="h-5 w-5 hover:text-white transition-colors" /></a>
-            <a href="mailto:aniruddhaadak80@gmail.com" title="Email"><Mail className="h-5 w-5 hover:text-white transition-colors" /></a>
-            <a href="https://t.me/aniruddhaadak" target="_blank" rel="noopener noreferrer" title="Telegram"><Send className="h-5 w-5 hover:text-white transition-colors" /></a>
-            <a href="https://linktr.ee/aniruddha.adak" target="_blank" rel="noopener noreferrer" title="Linktree"><LinkIcon className="h-5 w-5 hover:text-white transition-colors" /></a>
-          </div>
-
-          {/* Right: Copyright */}
-          <div className="text-sm text-slate-600 text-center md:text-right">
-            © 2026 careerzen. All rights reserved.
-          </div>
-
-        </div>
-      </footer>
-
+      <div className="pt-20" />
     </main>
   );
 }

@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Resume {
+  id        String   @id @default(uuid())
+  userId    String   // Store Clerk User ID directly
+  fileName  String
+  jobTitle  String?
+  matchScore Int?
+  fileUrl   String
+  fileType  String   // "PDF" or "DOCX"
+  content   String? // Optional: store full JSON content for strict retrieval
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}

@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Outfit, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ToastProvider } from "@/components/Toast";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -34,10 +37,18 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${outfit.variable} ${spaceGrotesk.variable} font-sans antialiased`}
+          className={`${outfit.variable} ${spaceGrotesk.variable} font-sans antialiased bg-slate-950 text-slate-50`}
           suppressHydrationWarning
         >
-          {children}
+          <ToastProvider>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <div className="flex-grow">
+                {children}
+              </div>
+              <Footer />
+            </div>
+          </ToastProvider>
         </body>
       </html>
     </ClerkProvider>

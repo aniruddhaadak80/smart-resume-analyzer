@@ -54,7 +54,7 @@ export const analyzeResumeWithGemini = async (resumeText: string, jobDescription
         `;
 
         const response = await ai.models.generateContent({
-            model: "gemini-3-flash-preview",
+            model: "gemini-3.0-flash-preview",
             contents: prompt,
         });
 

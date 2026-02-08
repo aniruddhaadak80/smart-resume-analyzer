@@ -10,10 +10,13 @@
 
 ## ✨ Features
 
-- **🎯 instant Analysis**: Get a Match Score & ATS Score in seconds.
-- **🔍 Smart Audit**: Finds missing keywords critical for passing automated screeners.
+- **🎯 instant Analysis**: Get a Match Score & ATS Score in seconds using **Gemini 3.0 Flash Preview**.
+- **� Multimodal Optimizer**: Upload your resume (**PDF/Word**) and target job descriptions (**PDF/Word/Image**).
+- **👁️ AI-Powered OCR**: Automatically extract text from screenshots or photos of job vacancies.
 - **🤖 AI Interview Coach**: Generates tailored interview questions based on your resume's weak spots.
-- **⚡ Modern UI**: sleek, motion-rich interface with dark mode aesthetics.
+- **🔍 Advanced Search**: Filter your history with granular time options (Yesterday, Last 30 Days, This Year, etc.).
+- **🕒 Precision Timing**: All saved resumes are timestamped in **IST (India Standard Time)** for accurate tracking.
+- **🎨 Premium UI**: Persistent Navbar, Footer, and a custom animated 404 page for a seamless experience.
 
 ---
 
@@ -35,10 +38,12 @@ Get actionable feedback and prep for your interview.
 
 ## 🛠 Tech Stack
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Styling**: Tailwind CSS v4 + Framer Motion + Glassmorphism
-- **AI**: Google Gemini 3 Flash Preview
-- **Parsing**: `pdf2json` & `mammoth`
+- **AI Engine**: Google Gemini 3.0 Flash Preview & Gemini 1.5 Flash (Vision/OCR)
+- **Database**: Prisma + PostgreSQL (Cloud) / LocalStorage (Client)
+- **Auth**: Clerk Authentication
+- **Parsing**: `pdf2json`, `mammoth` & AI-driven Multimodal Extraction
 - **Language**: TypeScript
 
 ---

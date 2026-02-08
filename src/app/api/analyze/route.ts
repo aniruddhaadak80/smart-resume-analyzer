@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
         const analysisResults = await analyzeResumeWithGemini(resumeText, jobDescription);
 
-        return NextResponse.json(analysisResults);
+        return NextResponse.json({ ...analysisResults, resumeText }); // Return raw text for future re-use
 
     } catch (error) {
         console.error("Analysis Error:", error);
