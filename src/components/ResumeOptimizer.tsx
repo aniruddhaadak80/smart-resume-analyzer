@@ -33,10 +33,11 @@ const highlightSummary = (text: string) => {
     if (!text) return null;
 
     // Patterns to highlight
+    // Patterns to highlight
     const patterns = [
-        { regex: /(\d+%|\d+\+|\$[\d,]+|\d+ years?|\d+x)/gi, class: 'text-emerald-400 font-bold' }, // Metrics
-        { regex: /(React|Node\.js|Python|JavaScript|TypeScript|AWS|Docker|MongoDB|PostgreSQL|Next\.js|Express\.js|Java|C\+\+|Tailwind|REST|API|GraphQL|Kubernetes|CI\/CD|Git|Agile|Scrum)/gi, class: 'text-cyan-400 font-semibold' }, // Tech
-        { regex: /(Full Stack|Front-end|Backend|Senior|Lead|Manager|Engineer|Developer|Architect|Expert|Proven|Award-winning|Certified)/gi, class: 'text-amber-400 font-semibold' }, // Titles/achievements
+        { regex: /(?:\d+%|\d+\+|\$[\d,]+|\d+ years?|\d+x)/gi, class: 'text-emerald-400 font-bold' }, // Metrics
+        { regex: /(?:React|Node\.js|Python|JavaScript|TypeScript|AWS|Docker|MongoDB|PostgreSQL|Next\.js|Express\.js|Java|C\+\+|Tailwind|REST|API|GraphQL|Kubernetes|CI\/CD|Git|Agile|Scrum)/gi, class: 'text-cyan-400 font-semibold' }, // Tech
+        { regex: /(?:Full Stack|Front-end|Backend|Senior|Lead|Manager|Engineer|Developer|Architect|Expert|Proven|Award-winning|Certified)/gi, class: 'text-amber-400 font-semibold' }, // Titles/achievements
     ];
 
     let result = text;
