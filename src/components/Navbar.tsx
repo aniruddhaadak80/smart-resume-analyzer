@@ -51,11 +51,11 @@ export default function Navbar() {
                     </SignedOut>
                     <SignedIn>
                         <div className="flex items-center gap-4">
-                            <Link href="/dashboard" prefetch={true} className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
-                                Dashboard
-                            </Link>
                             <Link href="/tracker" prefetch={true} className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
                                 Tracker
+                            </Link>
+                            <Link href="/dashboard" prefetch={true} className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
+                                Dashboard
                             </Link>
                             <UserButton afterSignOutUrl="/" appearance={{
                                 elements: {
