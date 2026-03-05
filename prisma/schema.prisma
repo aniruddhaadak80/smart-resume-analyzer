@@ -21,3 +21,23 @@ model Resume {
 
   @@index([userId])
 }
+
+model JobApplication {
+  id          String   @id @default(uuid())
+  userId      String
+  jobTitle    String
+  company     String
+  location    String?
+  jobUrl      String?
+  status      String   @default("wishlist") // wishlist | applied | interviewing | offer | rejected
+  notes       String?
+  salary      String?
+  appliedDate DateTime?
+  color       String?  // Optional color tag for visual distinction
+  position    Int      @default(0) // For ordering within a column
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
+}

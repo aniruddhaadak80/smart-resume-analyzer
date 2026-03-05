@@ -54,6 +54,9 @@ export default function Navbar() {
                             <Link href="/dashboard" prefetch={true} className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
                                 Dashboard
                             </Link>
+                            <Link href="/tracker" prefetch={true} className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
+                                Tracker
+                            </Link>
                             <UserButton afterSignOutUrl="/" appearance={{
                                 elements: {
                                     avatarBox: "w-10 h-10 ring-2 ring-teal-500/20"
