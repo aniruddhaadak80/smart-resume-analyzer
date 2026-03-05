@@ -15,6 +15,7 @@ import Link from "next/link";
 import InterviewCoach from "@/components/InterviewCoach";
 import ResumeOptimizer from "@/components/ResumeOptimizer";
 import LoadingText from "@/components/LoadingText";
+import KeywordHeatmap from "@/components/KeywordHeatmap";
 import { useUser, SignInButton } from "@clerk/nextjs";
 import { fireConfetti, checkBadges, type BadgeId } from "@/lib/gamification";
 import { BadgeUnlockToast } from "@/components/Badges";
@@ -356,6 +357,15 @@ export default function Home() {
                     <CardHeader><CardTitle>Candidate Summary</CardTitle></CardHeader>
                     <CardContent><p className="text-slate-300 text-lg leading-relaxed">{result.candidateSummary}</p></CardContent>
                   </Card>
+                </motion.div>
+
+                <motion.div variants={fadeInUp}>
+                  <KeywordHeatmap
+                    resumeText={result.resumeText || ""}
+                    jobDescription={jobDescription || ""}
+                    missingKeywords={result.missingKeywords || []}
+                    foundKeywords={result.skillsFound || []}
+                  />
                 </motion.div>
 
                 <div className="grid md:grid-cols-2 gap-6">
