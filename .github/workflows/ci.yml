@@ -1,0 +1,50 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-lint:
+    name: Build & Lint Ensure
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Next.js Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.npm
+          ${{ github.workspace }}/.next/cache
+        key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
+        restore-keys: |
+          ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+    - name: Generate Prisma Client
+      run: npx prisma generate
+
+    - name: Run Linter
+      run: npm run lint
+
+    - name: Type Check & Build Dummy
+      # We test if the project actually compiles. 
+      # We skip actual DB checks in CI unless mocked, but the build step ensures no type errors.
+      env:
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_placeholder"
+        CLERK_SECRET_KEY: "sk_test_placeholder"
+        DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+      run: npm run build
