@@ -15,7 +15,7 @@
 [![Sarvam AI](https://img.shields.io/badge/Sarvam_AI-Speech_To_Text-purple?logo=ai)](https://www.sarvam.ai/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[Live Demo] | [Report Bug] | [Request Feature] | [Contributing Guide]
+[Live Demo](#) | [Report Bug](https://github.com/aniruddhaadak80/smart-resume-analyzer/issues) | [Request Feature](https://github.com/aniruddhaadak80/smart-resume-analyzer/issues) | [Contributing Guide](./CONTRIBUTING.md)
 
 </div>
 
@@ -62,17 +62,17 @@ graph TD
     classDef db fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff,rx:8px,ry:8px;
 
     %% Nodes
-    UserUpload[User Uploads Resume\n(PDF/DOCX)]:::user
-    UserJob[User Provides Job Listing\n(Text/Image)]:::user
-    UserSpeech[User Speaks Answer\n(Voice Audio)]:::user
+    UserUpload["User Uploads Resume<br>(PDF/DOCX)"]:::user
+    UserJob["User Provides Job Listing<br>(Text/Image)"]:::user
+    UserSpeech["User Speaks Answer<br>(Voice Audio)"]:::user
     
-    Parser[Text/OCR Parsing Engine]:::ext
-    SarvamSTT[Sarvam AI\nSpeech-to-Text API]:::ai
-    Gemini[Google Gemini 3.0\nFlash AI Engine]:::ai
+    Parser["Text/OCR Parsing Engine"]:::ext
+    SarvamSTT["Sarvam AI<br>Speech-to-Text API"]:::ai
+    Gemini["Google Gemini 3.0<br>Flash AI Engine"]:::ai
     
-    Analysis(ATS Optimization Analysis):::ext
-    Questions(Generated Interview Scenarios):::ext
-    Feedback(Voice Answer Feedback):::ext
+    Analysis("ATS Optimization Analysis"):::ext
+    Questions("Generated Interview Scenarios"):::ext
+    Feedback("Voice Answer Feedback"):::ext
     
     DB[(PostgreSQL + Prisma)]:::db
     Dashboard(User Dashboard UI):::user
