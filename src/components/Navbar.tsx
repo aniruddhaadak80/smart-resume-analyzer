@@ -35,6 +35,12 @@ export default function Navbar() {
                             </div>
                         </a>
                     </div>
+
+                    {/* Optimize link - ALWAYS visible to everyone */}
+                    <Link href="/optimize" prefetch={true} className="text-sm font-medium text-amber-300 hover:text-amber-100 hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
+                        ✨ Optimize
+                    </Link>
+
                     <SignedOut>
                         <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                             <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50">Sign In</Button>
@@ -47,9 +53,6 @@ export default function Navbar() {
                         <div className="flex items-center gap-4">
                             <Link href="/dashboard" prefetch={true} className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
                                 Dashboard
-                            </Link>
-                            <Link href="/optimize" prefetch={true} className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
-                                Optimize
                             </Link>
                             <UserButton afterSignOutUrl="/" appearance={{
                                 elements: {

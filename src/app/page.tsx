@@ -15,6 +15,7 @@ import Link from "next/link";
 import InterviewCoach from "@/components/InterviewCoach";
 import ResumeOptimizer from "@/components/ResumeOptimizer";
 import LoadingText from "@/components/LoadingText";
+import { useUser, SignInButton } from "@clerk/nextjs";
 
 import { Variants } from "framer-motion";
 
@@ -44,6 +45,9 @@ export default function Home() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
   const [isMounted, setIsMounted] = useState(false);
+  const [showSignInPrompt, setShowSignInPrompt] = useState(false);
+  const { isSignedIn, isLoaded } = useUser();
+  const signInBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -61,6 +65,13 @@ export default function Home() {
   };
 
   const analyzeResume = async () => {
+    // Auth gate: require sign-in for analysis
+    if (!isSignedIn) {
+      setShowSignInPrompt(true);
+      signInBtnRef.current?.click();
+      return;
+    }
+
     if (!file) {
       setError('Please upload a resume to proceed.');
       return;
@@ -215,6 +226,11 @@ export default function Home() {
                       </motion.div>
                     )}
 
+                    {/* Hidden sign-in trigger for unauthenticated users */}
+                    <SignInButton mode="modal" forceRedirectUrl="/">
+                      <button ref={signInBtnRef} className="hidden" aria-hidden="true" />
+                    </SignInButton>
+
                     <Button
                       onClick={analyzeResume}
                       className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold py-8 text-xl shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:shadow-[0_0_40px_rgba(20,184,166,0.5)] transition-all rounded-xl relative overflow-hidden group cursor-pointer"
@@ -238,6 +254,8 @@ export default function Home() {
                               className="text-sm font-normal text-teal-100/80"
                             />
                           </div>
+                        ) : !isSignedIn ? (
+                          <>Sign In to Analyze <ArrowRight className="group-hover:translate-x-1 transition-transform" /></>
                         ) : (
                           <>Run Analysis <ArrowRight className="group-hover:translate-x-1 transition-transform" /></>
                         )}

@@ -10,13 +10,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { optimizeResume } from '@/app/actions/optimize';
 import { saveResume } from '@/app/actions/resume';
 import { extractText } from '@/app/actions/extract';
-import { useUser } from '@clerk/nextjs';
+import { useUser, SignInButton } from '@clerk/nextjs';
 import { generateDocx } from '@/lib/docx-generator';
 import { saveAs } from 'file-saver';
 import { pdf } from '@react-pdf/renderer';
 import { ResumePDF } from './ResumePDF';
 import { useToast } from './Toast';
 import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 
 // Skill color palette
 const skillColors = [
@@ -79,11 +80,18 @@ export default function OptimizeClient() {
     const [isExtractingJD, setIsExtractingJD] = useState(false);
     const [resumeFile, setResumeFile] = useState<File | null>(null);
     const [jdFile, setJdFile] = useState<File | null>(null);
-    const { user } = useUser();
+    const { user, isSignedIn } = useUser();
     const { showToast } = useToast();
     const router = useRouter();
+    const signInBtnRef = useRef<HTMLButtonElement>(null);
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'resume' | 'jd') => {
+        // Auth gate: require sign-in for file upload
+        if (!isSignedIn) {
+            signInBtnRef.current?.click();
+            return;
+        }
+
         const file = e.target.files?.[0];
         if (!file) return;
 
@@ -126,6 +134,12 @@ export default function OptimizeClient() {
     }, []);
 
     const handleOptimize = async () => {
+        // Auth gate: require sign-in for optimization
+        if (!isSignedIn) {
+            signInBtnRef.current?.click();
+            return;
+        }
+
         if (!resumeText.trim() || !jobDescription.trim()) {
             showToast('Please provide both resume text and job description.', 'error');
             return;
@@ -205,6 +219,11 @@ export default function OptimizeClient() {
 
     return (
         <main className="p-6 md:p-12">
+            {/* Hidden sign-in trigger for unauthenticated users */}
+            <SignInButton mode="modal" forceRedirectUrl="/optimize">
+                <button ref={signInBtnRef} className="hidden" aria-hidden="true" />
+            </SignInButton>
+
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <motion.div
