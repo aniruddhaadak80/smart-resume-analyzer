@@ -1,5 +1,26 @@
 import { GoogleGenAI } from "@google/genai";
 
+export const generateContentWithRetry = async (ai: GoogleGenAI, options: any, maxRetries = 3) => {
+    let attempt = 0;
+    while (attempt < maxRetries) {
+        try {
+            return await ai.models.generateContent(options);
+        } catch (error: any) {
+            const errorString = JSON.stringify(error) + String(error);
+            if (errorString.includes("503") || errorString.includes("429") || errorString.includes("UNAVAILABLE") || errorString.includes("high demand")) {
+                attempt++;
+                if (attempt >= maxRetries) throw error;
+                const delay = Math.pow(2, attempt - 1) * 1000 + Math.random() * 500; // Exponential backoff + jitter
+                console.warn(`[Gemini] API busy (503/429). Retrying in ${Math.round(delay)}ms... (Attempt ${attempt}/${maxRetries})`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            } else {
+                throw error;
+            }
+        }
+    }
+    throw new Error("Max retries exceeded");
+};
+
 export const analyzeResumeWithGemini = async (resumeText: string, jobDescription?: string) => {
     // Initialize client inside the function to avoid build-time errors
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
@@ -53,7 +74,7 @@ export const analyzeResumeWithGemini = async (resumeText: string, jobDescription
         IMPORTANT: Return ONLY raw JSON. Do not include markdown formatting.
         `;
 
-        const response = await ai.models.generateContent({
+        const response = await generateContentWithRetry(ai, {
             model: "gemini-3-flash-preview",
             contents: prompt,
         });

@@ -1,6 +1,7 @@
 'use server';
 
 import { GoogleGenAI } from "@google/genai";
+import { generateContentWithRetry } from "@/lib/gemini";
 
 export async function optimizeResume(resumeText: string, jobDescription: string) {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
@@ -80,7 +81,7 @@ export async function optimizeResume(resumeText: string, jobDescription: string)
     `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await generateContentWithRetry(ai, {
       model: "gemini-3-flash-preview",
       contents: prompt,
       config: {

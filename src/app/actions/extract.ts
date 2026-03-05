@@ -2,6 +2,7 @@
 
 import mammoth from "mammoth";
 import { GoogleGenAI } from "@google/genai";
+import { generateContentWithRetry } from "@/lib/gemini";
 
 export async function extractText(formData: FormData) {
     try {
@@ -61,7 +62,7 @@ export async function extractText(formData: FormData) {
 
                 const prompt = "Extract all text from this job description image. Maintain the structure and key details. Output only the extracted text.";
 
-                const response = await ai.models.generateContent({
+                const response = await generateContentWithRetry(ai, {
                     model: "gemini-3-flash-preview",
                     contents: [{
                         role: "user",
