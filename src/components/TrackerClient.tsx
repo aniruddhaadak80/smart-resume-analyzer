@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, GripVertical, Trash2, ExternalLink, MapPin, DollarSign, X, Briefcase, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { useUser, SignInButton } from '@clerk/nextjs';
 import { useToast } from './Toast';
 import { getApplications, createApplication, updateApplication, deleteApplication, JobApplicationData } from '@/app/actions/tracker';
@@ -50,14 +49,6 @@ export default function TrackerClient() {
         setMounted(true);
     }, []);
 
-    useEffect(() => {
-        if (isSignedIn && mounted) {
-            loadApplications();
-        } else if (mounted) {
-            setIsLoading(false);
-        }
-    }, [isSignedIn, mounted]);
-
     const loadApplications = async () => {
         setIsLoading(true);
         const result = await getApplications();
@@ -66,6 +57,14 @@ export default function TrackerClient() {
         }
         setIsLoading(false);
     };
+
+    useEffect(() => {
+        if (isSignedIn && mounted) {
+            loadApplications();
+        } else if (mounted) {
+            setIsLoading(false);
+        }
+    }, [isSignedIn, mounted]);
 
     const handleAdd = (columnId: string) => {
         if (!isSignedIn) {
