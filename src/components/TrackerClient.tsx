@@ -40,14 +40,9 @@ export default function TrackerClient() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [addToColumn, setAddToColumn] = useState('wishlist');
     const [draggedCard, setDraggedCard] = useState<string | null>(null);
-    const [mounted, setMounted] = useState(false);
     const { isSignedIn } = useUser();
     const { showToast } = useToast();
     const signInBtnRef = useRef<HTMLButtonElement>(null);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     const loadApplications = async () => {
         setIsLoading(true);
@@ -59,12 +54,21 @@ export default function TrackerClient() {
     };
 
     useEffect(() => {
-        if (isSignedIn && mounted) {
-            loadApplications();
-        } else if (mounted) {
-            setIsLoading(false);
+        if (!isSignedIn) {
+            // Use a microtask to avoid synchronous setState in effect body
+            queueMicrotask(() => setIsLoading(false));
+            return;
         }
-    }, [isSignedIn, mounted]);
+        let cancelled = false;
+        getApplications().then(result => {
+            if (cancelled) return;
+            if (result.success) {
+                setApplications(result.data as JobApp[]);
+            }
+            setIsLoading(false);
+        });
+        return () => { cancelled = true; };
+    }, [isSignedIn]);
 
     const handleAdd = (columnId: string) => {
         if (!isSignedIn) {
@@ -124,8 +128,6 @@ export default function TrackerClient() {
     };
 
     const getColumnApps = (status: string) => applications.filter(a => a.status === status);
-
-    if (!mounted) return <div className="min-h-screen"></div>;
 
     return (
         <main className="p-4 md:p-8">
