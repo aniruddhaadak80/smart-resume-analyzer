@@ -120,8 +120,9 @@ export default function OptimizeClient() {
     };
 
     // Load effects
+    const [mounted, setMounted] = useState(false);
     useEffect(() => {
-        // Ready
+        setMounted(true);
     }, []);
 
     const handleOptimize = async () => {
@@ -197,6 +198,10 @@ export default function OptimizeClient() {
             setIsSaving(false);
         }
     };
+
+    if (!mounted) {
+        return <div className="min-h-screen"></div>; // Prevents hydration mismatch by matching server initially
+    }
 
     return (
         <main className="p-6 md:p-12">

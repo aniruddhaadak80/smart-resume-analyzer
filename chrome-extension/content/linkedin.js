@@ -8,8 +8,15 @@ function injectAnalyzeButton() {
     // The top job snapshot container usually has a class like .job-view-layout-jobs-details 
     // or we can target the apply button area.
 
-    // Attempt 1: The container right next to the "Easy Apply" / "Save" buttons
-    const applyButtonContainers = document.querySelectorAll('.jobs-apply-button--top-card, .jobs-save-button');
+    // Attempt 1: The container right next to the "Easy Apply" / "Save" / "Apply" buttons
+    // LinkedIn has multiple layouts. This queries the container of the primary action buttons.
+    const applyButtonContainers = document.querySelectorAll(
+        '.jobs-apply-button--top-card, ' +
+        '.jobs-save-button, ' +
+        '.jobs-s-apply-button, ' +
+        'button.jobs-apply-button'
+    );
+
     if (applyButtonContainers.length === 0) return; // Not fully loaded yet
 
     const container = applyButtonContainers[0].parentElement;
