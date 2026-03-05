@@ -16,6 +16,8 @@ import InterviewCoach from "@/components/InterviewCoach";
 import ResumeOptimizer from "@/components/ResumeOptimizer";
 import LoadingText from "@/components/LoadingText";
 import { useUser, SignInButton } from "@clerk/nextjs";
+import { fireConfetti, checkBadges, type BadgeId } from "@/lib/gamification";
+import { BadgeUnlockToast } from "@/components/Badges";
 
 import { Variants } from "framer-motion";
 
@@ -46,6 +48,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [isMounted, setIsMounted] = useState(false);
   const [showSignInPrompt, setShowSignInPrompt] = useState(false);
+  const [newBadges, setNewBadges] = useState<BadgeId[]>([]);
   const { isSignedIn, isLoaded } = useUser();
   const signInBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -96,6 +99,12 @@ export default function Home() {
 
       setResult(data);
 
+      // 🎊 Gamification: check badges and fire confetti for 90%+ scores
+      const score = data.matchPercentage || 0;
+      const earned = checkBadges(score);
+      if (earned.length > 0) setNewBadges(earned);
+      if (score >= 90) fireConfetti();
+
     } catch (err: any) {
       setError(err.message || 'Something went wrong.');
     } finally {
@@ -108,6 +117,10 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-50 overflow-x-hidden selection:bg-teal-500/30">
 
+      {/* 🏅 Badge unlock notification */}
+      {newBadges.length > 0 && (
+        <BadgeUnlockToast badgeIds={newBadges} onClose={() => setNewBadges([])} />
+      )}
       {/* Background Ambience */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-[120px]" />

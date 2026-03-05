@@ -14,6 +14,7 @@ import { pdf } from '@react-pdf/renderer';
 import { ResumePDF } from './ResumePDF';
 import AdvancedSearch, { SearchFilters } from './AdvancedSearch';
 import { useToast } from './Toast';
+import { BadgeCollection } from './Badges';
 
 export default function DashboardClient({ serverHistory }: { serverHistory: any[] }) {
     const [history, setHistory] = useState<any[]>([]);
@@ -210,6 +211,9 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                             Analyzer
                         </Link>
                     </div>
+
+                    {/* Badges */}
+                    <BadgeCollection />
 
                     {/* Advanced Search */}
                     <AdvancedSearch onSearch={handleSearch} history={history} />
