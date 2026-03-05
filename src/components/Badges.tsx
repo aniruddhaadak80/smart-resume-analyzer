@@ -50,11 +50,7 @@ export function BadgeUnlockToast({ badgeIds, onClose }: { badgeIds: BadgeId[]; o
 
 // Badge collection grid for dashboard
 export function BadgeCollection() {
-    const [earned, setEarned] = useState<BadgeId[]>([]);
-
-    useEffect(() => {
-        setEarned(getEarnedBadges());
-    }, []);
+    const [earned] = useState<BadgeId[]>(() => getEarnedBadges());
 
     const allBadges = Object.values(BADGES);
 
@@ -73,8 +69,8 @@ export function BadgeCollection() {
                             key={badge.id}
                             whileHover={isEarned ? { scale: 1.05 } : {}}
                             className={`relative p-4 rounded-xl border text-center transition-all ${isEarned
-                                    ? `bg-gradient-to-br ${badge.gradient}/10 border-slate-600 hover:border-slate-500`
-                                    : 'bg-slate-900/30 border-slate-800 opacity-40 grayscale'
+                                ? `bg-gradient-to-br ${badge.gradient}/10 border-slate-600 hover:border-slate-500`
+                                : 'bg-slate-900/30 border-slate-800 opacity-40 grayscale'
                                 }`}
                         >
                             <div className={`text-3xl mb-2 ${isEarned ? '' : 'blur-[2px]'}`}>{badge.emoji}</div>
