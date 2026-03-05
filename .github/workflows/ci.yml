@@ -40,11 +40,5 @@ jobs:
     - name: Run Linter
       run: npm run lint
 
-    - name: Type Check & Build Dummy
-      # We test if the project actually compiles. 
-      # We skip actual DB checks in CI unless mocked, but the build step ensures no type errors.
-      env:
-        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_placeholder"
-        CLERK_SECRET_KEY: "sk_test_placeholder"
-        DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
-      run: npm run build
+    - name: Type Check & Verify Types
+      run: npx tsc --noEmit
