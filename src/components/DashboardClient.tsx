@@ -4,7 +4,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, FileText, ChevronRight, BarChart, Sparkles, Trash2, Edit2, X, Check, Eye } from "lucide-react";
+import { ArrowLeft, Calendar, FileText, ChevronRight, BarChart, Sparkles, Trash2, Edit2, X, Check, Eye, Briefcase, LayoutGrid } from "lucide-react";
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -193,6 +193,22 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                             <h1 className="text-3xl font-bold font-display">Your Library</h1>
                             <p className="text-slate-500 text-sm mt-1">{history.length} resumes saved</p>
                         </div>
+                    </div>
+
+                    {/* Quick Nav */}
+                    <div className="flex gap-3 flex-wrap">
+                        <Link href="/tracker" className="flex items-center gap-2 px-4 py-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl text-violet-300 hover:bg-violet-500/20 transition-all text-sm font-medium group">
+                            <Briefcase className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                            Application Tracker
+                        </Link>
+                        <Link href="/optimize" className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 hover:bg-amber-500/20 transition-all text-sm font-medium group">
+                            <Sparkles className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                            Optimize Resume
+                        </Link>
+                        <Link href="/" className="flex items-center gap-2 px-4 py-2.5 bg-teal-500/10 border border-teal-500/20 rounded-xl text-teal-300 hover:bg-teal-500/20 transition-all text-sm font-medium group">
+                            <LayoutGrid className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                            Analyzer
+                        </Link>
                     </div>
 
                     {/* Advanced Search */}
