@@ -19,6 +19,7 @@ export default async function DashboardPage() {
                     matchScore: true,
                     createdAt: true,
                     fileType: true,
+                    actionType: true,
                     content: true // Needed for re-generating docs
                 }
             });

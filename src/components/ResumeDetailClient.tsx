@@ -29,6 +29,7 @@ interface Resume {
     jobTitle: string | null;
     matchScore: number | null;
     content: string | null;
+    actionType?: string;
     createdAt: Date;
 }
 
@@ -166,6 +167,16 @@ export default function ResumeDetailClient({ resume }: { resume: Resume }) {
                                             {skill}
                                         </span>
                                     ))}
+                                    {/* Analysis version of skills */}
+                                    {data.skillsFound?.map((skill: string, i: number) => (
+                                        <span
+                                            key={`found-${i}`}
+                                            className={`bg-gradient-to-r ${skillColors[i % skillColors.length]} 
+                                                       px-3 py-1.5 rounded-lg text-xs font-medium border`}
+                                        >
+                                            {skill}
+                                        </span>
+                                    ))}
                                 </div>
                             </CardContent>
                         </Card>
@@ -202,10 +213,10 @@ export default function ResumeDetailClient({ resume }: { resume: Resume }) {
                         <Card className="bg-slate-900/50 border-slate-800">
                             <CardContent className="p-6 space-y-4">
                                 <h3 className="text-lg font-bold text-amber-400 flex items-center gap-2">
-                                    <Sparkles className="h-5 w-5" /> Professional Summary
+                                    <Sparkles className="h-5 w-5" /> {resume.actionType === 'ANALYZE' ? 'Candidate Summary' : 'Professional Summary'}
                                 </h3>
                                 <p className="text-slate-300 leading-relaxed">
-                                    {data.professionalSummary}
+                                    {data.professionalSummary || data.candidateSummary}
                                 </p>
                             </CardContent>
                         </Card>
@@ -257,6 +268,63 @@ export default function ResumeDetailClient({ resume }: { resume: Resume }) {
                                     </ul>
                                 </CardContent>
                             </Card>
+                        )}
+
+                        {/* Analysis Specific: Missing Keywords & Improvements */}
+                        {resume.actionType === 'ANALYZE' && (
+                            <>
+                                {data.missingKeywords && data.missingKeywords.length > 0 && (
+                                    <Card className="bg-slate-900/50 border-slate-800 border-l-4 border-l-red-500">
+                                        <CardContent className="p-6 space-y-4">
+                                            <h3 className="text-lg font-bold text-red-400 flex items-center gap-2">
+                                                Missing Keywords
+                                            </h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {data.missingKeywords.map((item: string, i: number) => (
+                                                    <span key={i} className="bg-red-950/40 text-red-300 border border-red-900/50 px-3 py-1 text-xs rounded-lg">
+                                                        {item}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                )}
+                                {data.improvements && data.improvements.length > 0 && (
+                                    <Card className="bg-slate-900/50 border-slate-800 border-l-4 border-l-yellow-500">
+                                        <CardContent className="p-6 space-y-4">
+                                            <h3 className="text-lg font-bold text-yellow-400 flex items-center gap-2">
+                                                Improvements
+                                            </h3>
+                                            <ul className="space-y-2">
+                                                {data.improvements.map((item: string, i: number) => (
+                                                    <li key={i} className="flex gap-2 text-slate-300 text-sm">
+                                                        <span className="text-yellow-500">•</span>
+                                                        {item}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </CardContent>
+                                    </Card>
+                                )}
+                                {data.interviewQuestions && data.interviewQuestions.length > 0 && (
+                                    <Card className="bg-slate-900/50 border-slate-800 border-l-4 border-l-violet-500">
+                                        <CardContent className="p-6 space-y-4">
+                                            <h3 className="text-lg font-bold text-violet-400 flex items-center gap-2">
+                                                Interview Prep Questions
+                                            </h3>
+                                            <ul className="space-y-4">
+                                                {data.interviewQuestions.map((q: any, i: number) => (
+                                                    <li key={i} className="border-l-2 border-violet-500/30 pl-4">
+                                                        <h4 className="font-bold text-slate-200 text-sm">{q.question}</h4>
+                                                        <p className="text-slate-400 text-xs mt-1 italic">Why they ask: {q.why}</p>
+                                                        <p className="text-violet-300 text-xs mt-1">Tip: {q.tip}</p>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </CardContent>
+                                    </Card>
+                                )}
+                            </>
                         )}
                     </motion.div>
                 </div>

@@ -90,6 +90,14 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
             });
         }
 
+        // Action Type filter
+        if (filters.actionType && filters.actionType !== 'all') {
+            result = result.filter(item => {
+                const type = item.actionType || 'OPTIMIZE';
+                return type === filters.actionType;
+            });
+        }
+
         // Sort
         result.sort((a, b) => {
             switch (filters.sortBy) {
@@ -188,28 +196,32 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-2">
+                            <Link href="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-2">
                                 <ArrowLeft className="h-4 w-4" /> Back to Analyzer
                             </Link>
-                            <h1 className="text-3xl font-bold font-display">Your Library</h1>
-                            <p className="text-slate-500 text-sm mt-1">{history.length} resumes saved</p>
+                            <h1 className="text-3xl font-bold font-display">History</h1>
+                            <p className="text-slate-500 text-sm mt-1">{history.length} activities saved</p>
                         </div>
                     </div>
 
                     {/* Quick Nav */}
                     <div className="flex gap-3 flex-wrap">
-                        <Link href="/tracker" className="flex items-center gap-2 px-4 py-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl text-violet-300 hover:bg-violet-500/20 transition-all text-sm font-medium group">
-                            <Briefcase className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                            Application Tracker
+                        <Link href="/" className="flex items-center gap-2 px-4 py-2.5 bg-teal-500/10 border border-teal-500/20 rounded-xl text-teal-300 hover:bg-teal-500/20 transition-all text-sm font-medium group">
+                            <LayoutGrid className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                            Analyzer
                         </Link>
                         <Link href="/optimize" className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 hover:bg-amber-500/20 transition-all text-sm font-medium group">
                             <Sparkles className="h-4 w-4 group-hover:scale-110 transition-transform" />
                             Optimize Resume
                         </Link>
-                        <Link href="/" className="flex items-center gap-2 px-4 py-2.5 bg-teal-500/10 border border-teal-500/20 rounded-xl text-teal-300 hover:bg-teal-500/20 transition-all text-sm font-medium group">
-                            <LayoutGrid className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                            Analyzer
+                        <Link href="/tracker" className="flex items-center gap-2 px-4 py-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl text-violet-300 hover:bg-violet-500/20 transition-all text-sm font-medium group">
+                            <Briefcase className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                            Application Tracker
                         </Link>
+                        <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-500/20 border border-blue-500/40 rounded-xl text-blue-300 transition-all text-sm font-bold shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                            <Calendar className="h-4 w-4" />
+                            History
+                        </div>
                     </div>
 
                     {/* Badges */}
@@ -242,8 +254,8 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                                 <Card className="glass-card hover:bg-slate-800/50 transition-all group border-slate-800 relative overflow-hidden">
                                     <CardContent className="flex flex-col md:flex-row md:items-center justify-between p-6 gap-4">
                                         <div className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer" onClick={() => handleView(item)}>
-                                            <div className={`p-3 rounded-full flex-shrink-0 ${item.matchScore === 100 ? 'bg-amber-500/10 text-amber-400' : 'bg-teal-500/10 text-teal-400'}`}>
-                                                {item.matchScore === 100 ? <Sparkles className="h-6 w-6" /> : <FileText className="h-6 w-6" />}
+                                            <div className={`p-3 rounded-full flex-shrink-0 ${item.actionType === 'ANALYZE' ? 'bg-cyan-500/10 text-cyan-400' : (item.matchScore === 100 ? 'bg-amber-500/10 text-amber-400' : 'bg-teal-500/10 text-teal-400')}`}>
+                                                {item.actionType === 'ANALYZE' ? <BarChart className="h-6 w-6" /> : (item.matchScore === 100 ? <Sparkles className="h-6 w-6" /> : <FileText className="h-6 w-6" />)}
                                             </div>
                                             <div className="min-w-0 cursor-pointer">
                                                 {editingId === item.id ? (
@@ -269,7 +281,8 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                                                             <h3 className="font-semibold text-lg text-slate-200 group-hover:text-teal-300 transition-colors truncate">
                                                                 {item.fileName}
                                                             </h3>
-                                                            {item.content && <span className="text-[10px] bg-amber-950/40 text-amber-500 px-2 py-0.5 rounded border border-amber-900/50 flex-shrink-0">OPTIMIZED</span>}
+                                                            {item.actionType === 'ANALYZE' && <span className="text-[10px] bg-cyan-950/40 text-cyan-500 px-2 py-0.5 rounded border border-cyan-900/50 flex-shrink-0">ANALYSIS</span>}
+                                                            {(!item.actionType || item.actionType === 'OPTIMIZE') && item.content && <span className="text-[10px] bg-amber-950/40 text-amber-500 px-2 py-0.5 rounded border border-amber-900/50 flex-shrink-0">OPTIMIZED</span>}
                                                         </div>
                                                         <div className="flex items-center gap-3 text-slate-500 text-sm mt-1">
                                                             <span className="flex items-center gap-1 cursor-pointer" title="Time in IST">

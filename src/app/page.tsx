@@ -19,6 +19,8 @@ import KeywordHeatmap from "@/components/KeywordHeatmap";
 import { useUser, SignInButton } from "@clerk/nextjs";
 import { fireConfetti, checkBadges, type BadgeId } from "@/lib/gamification";
 import { BadgeUnlockToast } from "@/components/Badges";
+import { saveResume } from "@/app/actions/resume";
+import { useToast } from "@/components/Toast";
 
 import { Variants } from "framer-motion";
 
@@ -50,7 +52,9 @@ export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const [showSignInPrompt, setShowSignInPrompt] = useState(false);
   const [newBadges, setNewBadges] = useState<BadgeId[]>([]);
-  const { isSignedIn, isLoaded } = useUser();
+  const [isSaving, setIsSaving] = useState(false);
+  const { isSignedIn, user, isLoaded } = useUser();
+  const { showToast } = useToast();
   const signInBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -110,6 +114,27 @@ export default function Home() {
       setError(err.message || 'Something went wrong.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!user || !result) return;
+    setIsSaving(true);
+    try {
+      await saveResume({
+        userId: user.id,
+        fileName: file?.name || "MyResume",
+        jobTitle: jobDescription ? "Target Role" : "General Analysis",
+        matchScore: result.matchPercentage || 0,
+        fileType: "JSON",
+        content: result,
+        actionType: "ANALYZE"
+      });
+      showToast('✨ Saved to Dashboard! Your analysis is safe in the cloud.', 'success', 6000);
+    } catch (e) {
+      showToast('Failed to save. Please try again.', 'error', 5000);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -331,9 +356,15 @@ export default function Home() {
                     <h2 className="text-4xl font-bold font-display">Analysis Report</h2>
                     <p className="text-slate-400">Detailed insights for your profile</p>
                   </div>
-                  <Button onClick={clearResult} variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-300 cursor-pointer">
-                    Upload New Resume
-                  </Button>
+                  <div className="flex gap-3 mt-4 md:mt-0">
+                    <Button onClick={handleSave} disabled={isSaving} className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:shadow-emerald-500/50 text-white cursor-pointer transition-all border-2 border-emerald-400/30">
+                      {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CheckCircle2 className="h-4 w-4 mr-2" />}
+                      Save to Dashboard
+                    </Button>
+                    <Button onClick={clearResult} variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-300 cursor-pointer">
+                      Upload New Resume
+                    </Button>
+                  </div>
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

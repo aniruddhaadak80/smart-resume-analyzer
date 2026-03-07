@@ -8,8 +8,9 @@ export async function saveResume(data: {
     fileName: string;
     jobTitle: string;
     matchScore: number;
-    fileType: "PDF" | "DOCX";
-    content: any; // The optimization JSON
+    fileType: "PDF" | "DOCX" | "JSON";
+    content: any; // The optimization or analysis JSON
+    actionType?: "OPTIMIZE" | "ANALYZE" | "COACH";
 }) {
     try {
         await prisma.resume.create({
@@ -21,6 +22,7 @@ export async function saveResume(data: {
                 fileType: data.fileType,
                 fileUrl: "", // We can generate on fly from content for local dev
                 content: JSON.stringify(data.content),
+                actionType: data.actionType || "OPTIMIZE",
             }
         });
 
