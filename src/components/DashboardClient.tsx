@@ -19,6 +19,7 @@ import { BadgeCollection } from './Badges';
 export default function DashboardClient({ serverHistory }: { serverHistory: any[] }) {
     const [history, setHistory] = useState<any[]>([]);
     const [filteredHistory, setFilteredHistory] = useState<any[]>([]);
+    const [activeCategory, setActiveCategory] = useState<'all' | 'ANALYZE' | 'OPTIMIZE' | 'TRACKER'>('all');
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editValue, setEditValue] = useState('');
     const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -113,6 +114,11 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
         setFilteredHistory(result);
     }, [history]);
 
+    // Apply the active category on top of the search filters
+    const finalHistory = filteredHistory.filter(item =>
+        activeCategory === 'all' ? true : (item.actionType || 'OPTIMIZE') === activeCategory
+    );
+
     const handleView = (item: any) => {
         if (item.source === 'cloud' && item.id) {
             router.push(`/resume/${item.id}`);
@@ -206,22 +212,49 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
 
                     {/* Quick Nav */}
                     <div className="flex gap-3 flex-wrap">
-                        <Link href="/" className="flex items-center gap-2 px-4 py-2.5 bg-teal-500/10 border border-teal-500/20 rounded-xl text-teal-300 hover:bg-teal-500/20 transition-all text-sm font-medium group">
+                        <button
+                            onClick={() => setActiveCategory('ANALYZE')}
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group
+                                ${activeCategory === 'ANALYZE'
+                                    ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.3)]'
+                                    : 'bg-teal-500/5 border border-teal-500/10 text-teal-400/70 hover:bg-teal-500/10 hover:text-teal-300'}`}
+                        >
                             <LayoutGrid className="h-4 w-4 group-hover:scale-110 transition-transform" />
                             Analyzer
-                        </Link>
-                        <Link href="/optimize" className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 hover:bg-amber-500/20 transition-all text-sm font-medium group">
+                        </button>
+
+                        <button
+                            onClick={() => setActiveCategory('OPTIMIZE')}
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group
+                                ${activeCategory === 'OPTIMIZE'
+                                    ? 'bg-amber-500/20 border border-amber-500/40 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                                    : 'bg-amber-500/5 border border-amber-500/10 text-amber-400/70 hover:bg-amber-500/10 hover:text-amber-300'}`}
+                        >
                             <Sparkles className="h-4 w-4 group-hover:scale-110 transition-transform" />
                             Optimize Resume
-                        </Link>
-                        <Link href="/tracker" className="flex items-center gap-2 px-4 py-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl text-violet-300 hover:bg-violet-500/20 transition-all text-sm font-medium group">
+                        </button>
+
+                        <button
+                            onClick={() => setActiveCategory('TRACKER')}
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group
+                                ${activeCategory === 'TRACKER'
+                                    ? 'bg-violet-500/20 border border-violet-500/40 text-violet-300 shadow-[0_0_15px_rgba(139,92,246,0.3)]'
+                                    : 'bg-violet-500/5 border border-violet-500/10 text-violet-400/70 hover:bg-violet-500/10 hover:text-violet-300'}`}
+                        >
                             <Briefcase className="h-4 w-4 group-hover:scale-110 transition-transform" />
                             Application Tracker
-                        </Link>
-                        <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-500/20 border border-blue-500/40 rounded-xl text-blue-300 transition-all text-sm font-bold shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                        </button>
+
+                        <button
+                            onClick={() => setActiveCategory('all')}
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer shadow-sm
+                                ${activeCategory === 'all'
+                                    ? 'bg-blue-500/20 border border-blue-500/40 text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                                    : 'bg-slate-800 border border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white'}`}
+                        >
                             <Calendar className="h-4 w-4" />
                             History
-                        </div>
+                        </button>
                     </div>
 
                     {/* Badges */}
@@ -233,17 +266,19 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
 
                 {/* List */}
                 <div className="grid gap-4">
-                    {filteredHistory.length === 0 ? (
+                    {finalHistory.length === 0 ? (
                         <div className="text-center py-20 bg-slate-900/50 rounded-2xl border border-slate-800">
                             <BarChart className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-                            <h3 className="text-xl font-medium text-slate-300">No Resumes Found</h3>
-                            <p className="text-slate-500 mt-2">Upload a resume or save an optimized one to see it here.</p>
-                            <Button asChild className="mt-6 bg-teal-600 hover:bg-teal-500">
-                                <Link href="/">Upload Resume</Link>
-                            </Button>
+                            <h3 className="text-xl font-medium text-slate-300">No Records Found</h3>
+                            <p className="text-slate-500 mt-2">No activities match your selected filters.</p>
+                            {activeCategory === 'all' && (
+                                <Button asChild className="mt-6 bg-teal-600 hover:bg-teal-500">
+                                    <Link href="/">Try Analyzer</Link>
+                                </Button>
+                            )}
                         </div>
                     ) : (
-                        filteredHistory.map((item, i) => (
+                        finalHistory.map((item, i) => (
                             <motion.div
                                 key={item.id || i}
                                 initial={{ opacity: 0, y: 20 }}
@@ -254,8 +289,14 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                                 <Card className="glass-card hover:bg-slate-800/50 transition-all group border-slate-800 relative overflow-hidden">
                                     <CardContent className="flex flex-col md:flex-row md:items-center justify-between p-6 gap-4">
                                         <div className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer" onClick={() => handleView(item)}>
-                                            <div className={`p-3 rounded-full flex-shrink-0 ${item.actionType === 'ANALYZE' ? 'bg-cyan-500/10 text-cyan-400' : (item.matchScore === 100 ? 'bg-amber-500/10 text-amber-400' : 'bg-teal-500/10 text-teal-400')}`}>
-                                                {item.actionType === 'ANALYZE' ? <BarChart className="h-6 w-6" /> : (item.matchScore === 100 ? <Sparkles className="h-6 w-6" /> : <FileText className="h-6 w-6" />)}
+                                            <div className={`p-3 rounded-full flex-shrink-0 
+                                                ${item.actionType === 'TRACKER' ? 'bg-violet-500/10 text-violet-400' :
+                                                    item.actionType === 'ANALYZE' ? 'bg-cyan-500/10 text-cyan-400' :
+                                                        (item.matchScore === 100 ? 'bg-amber-500/10 text-amber-400' : 'bg-teal-500/10 text-teal-400')}`}
+                                            >
+                                                {item.actionType === 'TRACKER' ? <Briefcase className="h-6 w-6" /> :
+                                                    item.actionType === 'ANALYZE' ? <BarChart className="h-6 w-6" /> :
+                                                        (item.matchScore === 100 ? <Sparkles className="h-6 w-6" /> : <FileText className="h-6 w-6" />)}
                                             </div>
                                             <div className="min-w-0 cursor-pointer">
                                                 {editingId === item.id ? (
@@ -281,6 +322,7 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                                                             <h3 className="font-semibold text-lg text-slate-200 group-hover:text-teal-300 transition-colors truncate">
                                                                 {item.fileName}
                                                             </h3>
+                                                            {item.actionType === 'TRACKER' && <span className="text-[10px] bg-violet-950/40 text-violet-400 px-2 py-0.5 rounded border border-violet-900/50 flex-shrink-0">JOB STATUS: {item.jobTitle}</span>}
                                                             {item.actionType === 'ANALYZE' && <span className="text-[10px] bg-cyan-950/40 text-cyan-500 px-2 py-0.5 rounded border border-cyan-900/50 flex-shrink-0">ANALYSIS</span>}
                                                             {(!item.actionType || item.actionType === 'OPTIMIZE') && item.content && <span className="text-[10px] bg-amber-950/40 text-amber-500 px-2 py-0.5 rounded border border-amber-900/50 flex-shrink-0">OPTIMIZED</span>}
                                                         </div>
@@ -296,8 +338,12 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                                                                     hour12: true
                                                                 })}
                                                             </span>
-                                                            <span>•</span>
-                                                            <span>Score: <span className={item.matchScore >= 90 || item.result?.matchPercentage >= 70 ? "text-teal-400 font-bold" : "text-yellow-400 font-bold"}>{item.matchScore || item.result?.matchPercentage}%</span></span>
+                                                            {item.actionType !== 'TRACKER' && (
+                                                                <>
+                                                                    <span>•</span>
+                                                                    <span>Score: <span className={item.matchScore >= 90 || item.result?.matchPercentage >= 70 ? "text-teal-400 font-bold" : "text-yellow-400 font-bold"}>{item.matchScore || item.result?.matchPercentage}%</span></span>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </>
                                                 )}
@@ -311,14 +357,14 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
-                                                    className="h-8 text-xs border-teal-700 text-teal-400 hover:bg-teal-900/50"
-                                                    onClick={() => router.push(`/resume/${item.id}`)}
+                                                    className={`h-8 text-xs ${item.actionType === 'TRACKER' ? 'border-violet-700 text-violet-400 hover:bg-violet-900/50' : 'border-teal-700 text-teal-400 hover:bg-teal-900/50'}`}
+                                                    onClick={() => handleView(item)}
                                                 >
                                                     <Eye className="h-3 w-3 mr-1" /> View
                                                 </Button>
                                             )}
 
-                                            {item.content && (
+                                            {item.content && item.actionType !== 'TRACKER' && (
                                                 <>
                                                     <Button size="sm" variant="outline" className="h-8 text-xs border-slate-700 hover:bg-slate-800" onClick={(e) => handleDownload(e, item, 'PDF')}>
                                                         PDF
@@ -330,29 +376,34 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                                             )}
 
                                             {/* Edit Button - for both Cloud and Local */}
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setEditingId(item.id);
-                                                    setEditValue(item.fileName);
-                                                }}
-                                                className="p-2 hover:bg-slate-700 rounded transition-colors cursor-pointer"
-                                                title="Rename"
-                                            >
-                                                <Edit2 className="h-4 w-4 text-slate-400" />
-                                            </button>
+                                            {item.actionType !== 'TRACKER' && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setEditingId(item.id);
+                                                        setEditValue(item.fileName);
+                                                    }}
+                                                    className="p-2 hover:bg-slate-700 rounded transition-colors cursor-pointer"
+                                                    title="Rename"
+                                                >
+                                                    <Edit2 className="h-4 w-4 text-slate-400" />
+                                                </button>
+                                            )}
 
                                             {/* Delete Button - for both Cloud and Local */}
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setDeletingId(item.id);
-                                                }}
-                                                className="p-2 hover:bg-red-900/50 rounded transition-colors cursor-pointer"
-                                                title="Delete"
-                                            >
-                                                <Trash2 className="h-4 w-4 text-red-400" />
-                                            </button>
+                                            {/* Delete Button - for both Cloud and Local */}
+                                            {item.actionType !== 'TRACKER' && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setDeletingId(item.id);
+                                                    }}
+                                                    className="p-2 hover:bg-red-900/50 rounded transition-colors cursor-pointer"
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 className="h-4 w-4 text-red-400" />
+                                                </button>
+                                            )}
 
                                             {item.source === 'local' && (
                                                 <ChevronRight className="h-5 w-5 text-slate-600 group-hover:text-white transition-colors" />
