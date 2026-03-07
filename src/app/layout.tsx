@@ -6,6 +6,7 @@ import { ToastProvider } from "@/components/Toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ClientOnly from "@/components/ClientOnly";
+import LoginTracker from "@/components/LoginTracker";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -51,6 +52,7 @@ export default function RootLayout({
               </div>
               <ClientOnly>
                 <Footer />
+                <LoginTracker />
               </ClientOnly>
             </div>
           </ToastProvider>

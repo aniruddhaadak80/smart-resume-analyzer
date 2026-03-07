@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
+import { logActivity } from '@/lib/activity-logger';
 
 export type JobApplicationData = {
     jobTitle: string;
@@ -52,6 +53,11 @@ export async function createApplication(data: JobApplicationData) {
                 appliedDate: data.status === 'applied' ? new Date() : null,
             },
         });
+        await logActivity(userId, 'TRACKER', {
+            action: 'CREATED_JOB',
+            jobTitle: data.jobTitle,
+            company: data.company
+        });
         revalidatePath('/tracker');
         return { success: true, data: application };
     } catch (error) {
@@ -77,6 +83,13 @@ export async function updateApplication(id: string, data: Partial<JobApplication
             where: { id, userId },
             data: updateData,
         });
+
+        await logActivity(userId, 'TRACKER', {
+            action: 'UPDATED_JOB_STATUS',
+            status: updateData.status || 'unknown',
+            jobTitle: application.jobTitle
+        });
+
         revalidatePath('/tracker');
         return { success: true, data: application };
     } catch (error) {
@@ -91,8 +104,13 @@ export async function deleteApplication(id: string) {
     if (!userId) return { success: false, error: 'Not authenticated' };
 
     try {
-        await prisma.jobApplication.delete({
+        const app = await prisma.jobApplication.delete({
             where: { id, userId },
+        });
+        await logActivity(userId, 'TRACKER', {
+            action: 'DELETED_JOB',
+            jobTitle: app.jobTitle,
+            company: app.company
         });
         revalidatePath('/tracker');
         return { success: true };

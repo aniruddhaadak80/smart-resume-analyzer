@@ -4,6 +4,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, FileText, ChevronRight, BarChart, Sparkles, Trash2, Edit2, X, Check, Eye, Briefcase, LayoutGrid } from "lucide-react";
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -205,9 +206,18 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                             <Link href="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-2">
                                 <ArrowLeft className="h-4 w-4" /> Back to Analyzer
                             </Link>
-                            <h1 className="text-3xl font-bold font-display">History</h1>
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-3xl font-bold font-display">History</h1>
+                                <Badge variant="secondary" className="bg-slate-800 text-slate-300 pointer-events-none">
+                                    {finalHistory.length} Items
+                                </Badge>
+                            </div>
                             <p className="text-slate-500 text-sm mt-1">{history.length} activities saved</p>
                         </div>
+                        <Link href="/timeline" className="mt-4 md:mt-0 flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-lg hover:shadow-fuchsia-500/25">
+                            <Sparkles className="h-4 w-4" />
+                            View Advanced Timeline
+                        </Link>
                     </div>
 
                     {/* Quick Nav */}

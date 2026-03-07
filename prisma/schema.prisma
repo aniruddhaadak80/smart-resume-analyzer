@@ -42,3 +42,13 @@ model JobApplication {
   @@index([userId])
   @@index([userId, status])
 }
+
+model UserActivity {
+  id          String   @id @default(uuid())
+  userId      String
+  actionType  String   // LOGIN, SIGNUP, ANALYZE, OPTIMIZE, TRACKER, COACH, CHAT
+  details     String?  // JSON stringified additional context
+  createdAt   DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+}

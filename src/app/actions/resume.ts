@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "@/lib/activity-logger";
 
 export async function saveResume(data: {
     userId: string;
@@ -24,6 +25,12 @@ export async function saveResume(data: {
                 content: JSON.stringify(data.content),
                 actionType: data.actionType || "OPTIMIZE",
             }
+        });
+
+        await logActivity(data.userId, data.actionType || "OPTIMIZE", {
+            action: 'SAVED_REPORT',
+            fileName: data.fileName,
+            score: data.matchScore
         });
 
         revalidatePath('/dashboard');
