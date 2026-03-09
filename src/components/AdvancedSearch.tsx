@@ -13,6 +13,7 @@ interface AdvancedSearchProps {
 export interface SearchFilters {
     dateRange: 'all' | 'today' | 'yesterday' | 'week' | 'month' | 'threeMonths' | 'year' | 'lastYear';
     scoreRange: 'all' | 'perfect' | 'high' | 'medium';
+    actionType: 'all' | 'OPTIMIZE' | 'ANALYZE' | 'COACH';
     sortBy: 'date' | 'score' | 'name';
 }
 
@@ -34,6 +35,12 @@ const scoreRangeOptions = [
     { value: 'medium', label: '50-79%', icon: Award },
 ];
 
+const actionTypeOptions = [
+    { value: 'all', label: 'All Activities', icon: Filter },
+    { value: 'ANALYZE', label: 'Analyses', icon: Filter },
+    { value: 'OPTIMIZE', label: 'Optimizations', icon: Filter },
+];
+
 const sortOptions = [
     { value: 'date', label: 'Newest First' },
     { value: 'score', label: 'Highest Score' },
@@ -47,6 +54,7 @@ export default function AdvancedSearch({ onSearch, history }: AdvancedSearchProp
     const [filters, setFilters] = useState<SearchFilters>({
         dateRange: 'all',
         scoreRange: 'all',
+        actionType: 'all',
         sortBy: 'date',
     });
     const inputRef = useRef<HTMLInputElement>(null);
@@ -224,6 +232,30 @@ export default function AdvancedSearch({ onSearch, history }: AdvancedSearchProp
                                     </div>
                                 </div>
 
+                                {/* Action Type */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                                        Activity Type
+                                    </label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {actionTypeOptions.map((option) => (
+                                            <button
+                                                key={option.value}
+                                                onClick={() => setFilters({ ...filters, actionType: option.value as any })}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all
+                                                           flex items-center gap-1.5 cursor-pointer
+                                                           ${filters.actionType === option.value
+                                                        ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                                                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border border-transparent'
+                                                    }`}
+                                            >
+                                                <option.icon className="h-3 w-3" />
+                                                {option.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 {/* Sort By */}
                                 <div className="space-y-2">
                                     <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">
@@ -250,7 +282,7 @@ export default function AdvancedSearch({ onSearch, history }: AdvancedSearchProp
                             {/* Reset Filters */}
                             {activeFiltersCount > 0 && (
                                 <button
-                                    onClick={() => setFilters({ dateRange: 'all', scoreRange: 'all', sortBy: 'date' })}
+                                    onClick={() => setFilters({ dateRange: 'all', scoreRange: 'all', actionType: 'all', sortBy: 'date' })}
                                     className="text-xs text-slate-500 hover:text-white transition-colors"
                                 >
                                     Reset all filters

@@ -13,13 +13,25 @@ export async function transcribeAudio(formData: FormData) {
             throw new Error('No audio file provided');
         }
 
-        const response = await client.speechToText.transcribe({
-            file: file,
-            model: "saarika:v2.5",
-            language_code: "en-IN",
+        const sarvamFormData = new FormData();
+        sarvamFormData.append("file", file);
+        sarvamFormData.append("model", "saaras:v3");
+
+        const response = await fetch("https://api.sarvam.ai/speech-to-text-translate", {
+            method: "POST",
+            headers: {
+                "api-subscription-key": process.env.SARVAM_API_KEY || "",
+            },
+            body: sarvamFormData
         });
 
-        return { success: true, text: response.transcript };
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error?.message || "Sarvam STT Error");
+        }
+
+        return { success: true, text: data.transcript || data.output || "No transcription found" };
 
     } catch (error: any) {
         console.error('Transcription error:', error);

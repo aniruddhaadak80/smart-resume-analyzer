@@ -2,14 +2,16 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "@/lib/activity-logger";
 
 export async function saveResume(data: {
     userId: string;
     fileName: string;
     jobTitle: string;
     matchScore: number;
-    fileType: "PDF" | "DOCX";
-    content: any; // The optimization JSON
+    fileType: "PDF" | "DOCX" | "JSON";
+    content: any; // The optimization or analysis JSON
+    actionType?: "OPTIMIZE" | "ANALYZE" | "COACH";
 }) {
     try {
         await prisma.resume.create({
@@ -21,7 +23,14 @@ export async function saveResume(data: {
                 fileType: data.fileType,
                 fileUrl: "", // We can generate on fly from content for local dev
                 content: JSON.stringify(data.content),
+                actionType: data.actionType || "OPTIMIZE",
             }
+        });
+
+        await logActivity(data.userId, data.actionType || "OPTIMIZE", {
+            action: 'SAVED_REPORT',
+            fileName: data.fileName,
+            score: data.matchScore
         });
 
         revalidatePath('/dashboard');
