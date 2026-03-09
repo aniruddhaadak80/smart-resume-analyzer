@@ -1,9 +1,14 @@
 'use server';
 
 import { GoogleGenAI } from "@google/genai";
-import { generateContentWithRetry } from "@/lib/gemini";
+import { generateContentWithRetry, analyzeResumeWithGemini } from "@/lib/gemini";
 
-export async function optimizeResume(resumeText: string, jobDescription: string) {
+export async function optimizeResume(
+  resumeText: string,
+  jobDescription: string,
+  options: { includeToneCritique?: boolean } = {}
+) {
+  const { includeToneCritique = false } = options;
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
   const prompt = `
@@ -78,21 +83,50 @@ export async function optimizeResume(resumeText: string, jobDescription: string)
     - Add languages if mentioned in original resume
     - Add achievements to fill any gaps
     - Every bullet point should be impactful with metrics where possible
+    ${includeToneCritique ? `
+    TONE & GRAMMAR CRITIQUE (include this extra key in your JSON output):
+    Also analyse the rewritten resume bullets and summary for tone and grammar issues.
+    Add the following key at the top level of the JSON object:
+    "toneAndGrammar": {
+      "overallToneScore": <integer 0-100>,
+      "passiveVoiceCount": <integer — number of passive-voice phrases found>,
+      "weakVerbCount": <integer — count of weak/vague verbs like "helped", "assisted", "worked on">,
+      "summary": "<1-2 sentence overall critique>",
+      "toneStrengths": ["<strength 1>", "<strength 2>"],
+      "toneIssues": [
+        { "original": "<original phrase>", "issue": "<why it's weak>", "suggestion": "<stronger rewrite>" }
+      ],
+      "grammarErrors": [
+        { "original": "<original text>", "issue": "<grammar rule broken>", "correction": "<corrected text>" }
+      ]
+    }
+    ` : ''}
     `;
 
   try {
-    const response = await generateContentWithRetry(ai, {
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-      }
-    });
+    // Run optimization (and optionally tone analysis) in parallel
+    const [optimizeResponse, toneAnalysis] = await Promise.all([
+      generateContentWithRetry(ai, {
+        model: "gemini-3-flash-preview",
+        contents: prompt,
+        config: { responseMimeType: "application/json" },
+      }),
+      includeToneCritique
+        ? analyzeResumeWithGemini(resumeText, jobDescription, { includeToneCritique: true })
+        : Promise.resolve(null),
+    ]);
 
-    const text = response.text;
+    const text = optimizeResponse.text;
     if (!text) throw new Error("No response from AI");
 
-    return { success: true, data: JSON.parse(text) };
+    const data = JSON.parse(text);
+
+    // Attach tone & grammar analysis if requested
+    if (toneAnalysis?.toneAndGrammar) {
+      data.toneAndGrammar = toneAnalysis.toneAndGrammar;
+    }
+
+    return { success: true, data };
 
   } catch (error: any) {
     console.error("Optimization Error:", error);
