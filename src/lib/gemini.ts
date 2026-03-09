@@ -21,7 +21,58 @@ export const generateContentWithRetry = async (ai: GoogleGenAI, options: any, ma
     throw new Error("Max retries exceeded");
 };
 
-export const analyzeResumeWithGemini = async (resumeText: string, jobDescription?: string) => {
+export interface ToneIssue {
+
+    original: string;
+
+    issue: string;
+
+    suggestion: string;
+}
+
+export interface GrammarError {
+    /** The exact text containing the error */
+    original: string;
+    /** A plain-English explanation of the grammatical mistake */
+    issue: string;
+    /** The corrected version */
+    correction: string;
+}
+
+export interface ToneAndGrammarAnalysis {
+    overallToneScore: number;          // 0-100: higher = more active/assertive
+    passiveVoiceCount: number;         // total passive-voice constructions found
+    weakVerbCount: number;             // total weak verbs (e.g. "was responsible for")
+    toneIssues: ToneIssue[];           // per-bullet breakdown
+    grammarErrors: GrammarError[];     // grammatical errors found
+    toneStrengths: string[];           // positive observations about tone
+    summary: string;                   // one-paragraph human-readable overall assessment
+}
+
+export interface AnalysisResult {
+    matchPercentage: number;
+    atsScore: number;
+    candidateSummary: string;
+    missingKeywords: string[];
+    skillsFound: string[];
+    improvements: string[];
+    interviewQuestions: { question: string; answer: string }[];
+    /** Present only when `includeToneCritique` is true */
+    toneAndGrammar?: ToneAndGrammarAnalysis;
+}
+
+export interface AnalyzeResumeOptions {
+    /** When true, Gemini will also critique tone & grammar */
+    includeToneCritique?: boolean;
+}
+
+export const analyzeResumeWithGemini = async (
+    resumeText: string,
+    jobDescription?: string,
+    options: AnalyzeResumeOptions = {}
+): Promise<AnalysisResult> => {
+    const { includeToneCritique = false } = options;
+
     // Initialize client inside the function to avoid build-time errors
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
@@ -53,6 +104,7 @@ export const analyzeResumeWithGemini = async (resumeText: string, jobDescription
             `;
         }
 
+        // ── Core JSON schema (always present) ─────────────────────────────────
         prompt += `
         Provide a JSON output with the following structure:
         {
@@ -68,10 +120,40 @@ export const analyzeResumeWithGemini = async (resumeText: string, jobDescription
                     "answer": "Ideal brief answer"
                 }
             ]
+        `;
+
+        // ── Optional tone & grammar block ──────────────────────────────────────
+        if (includeToneCritique) {
+            prompt += `,
+            "toneAndGrammar": {
+                "overallToneScore": (integer 0-100, where 100 means every bullet starts with a strong action verb and there is zero passive voice),
+                "passiveVoiceCount": (integer — total passive-voice constructions found across all bullets),
+                "weakVerbCount": (integer — count of weak/vague verbs like "was responsible for", "helped with", "worked on", "assisted in"),
+                "toneIssues": [
+                    {
+                        "original": "exact bullet or phrase from the resume that has a tone problem",
+                        "issue": "plain-English explanation: is it passive voice? a weak verb? filler language?",
+                        "suggestion": "rewritten version starting with a strong action verb and quantified impact if possible"
+                    }
+                ],
+                "grammarErrors": [
+                    {
+                        "original": "exact text containing the grammatical error",
+                        "issue": "plain-English explanation of the grammar mistake",
+                        "correction": "corrected version"
+                    }
+                ],
+                "toneStrengths": ["list of 2-4 positive observations about the resume's language"],
+                "summary": "A 2-3 sentence overall assessment of the resume's tone and grammar quality, with the most impactful advice."
+            }
+            `;
+        }
+
+        prompt += `
         }
         
         Provide between 10 to 20 unique interviewQuestions. Mix technical, behavioral, and situational questions.
-        IMPORTANT: Return ONLY raw JSON. Do not include markdown formatting.
+        IMPORTANT: Return ONLY raw JSON. Do not include markdown formatting or code fences.
         `;
 
         const response = await generateContentWithRetry(ai, {
@@ -81,10 +163,10 @@ export const analyzeResumeWithGemini = async (resumeText: string, jobDescription
 
         const text = response.text ?? "";
 
-        // Clean up markdown code blocks if present
-        const cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        // Strip any accidental markdown code fences
+        const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
 
-        return JSON.parse(cleanedText);
+        return JSON.parse(cleanedText) as AnalysisResult;
 
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
