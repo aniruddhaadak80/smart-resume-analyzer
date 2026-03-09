@@ -14,6 +14,9 @@ export async function POST(req: NextRequest) {
         const file = formData.get("resume") as File;
         const jobDescription = formData.get("jobDescription") as string;
 
+        // The UI toggle sends "true" or "false" as a string via FormData
+        const includeToneCritique = formData.get("includeToneCritique") === "true";
+
         if (!file) {
             return NextResponse.json({ error: "Missing file" }, { status: 400 });
         }
@@ -61,7 +64,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
         }
 
-        const analysisResults = await analyzeResumeWithGemini(resumeText, jobDescription);
+        const analysisResults = await analyzeResumeWithGemini(resumeText, jobDescription, {
+            includeToneCritique,
+        });
 
         return NextResponse.json({ ...analysisResults, resumeText }); // Return raw text for future re-use
 
