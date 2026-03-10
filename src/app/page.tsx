@@ -4,14 +4,11 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Github } from "lucide-react";
+import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import InterviewCoach from "@/components/InterviewCoach";
 import ResumeOptimizer from "@/components/ResumeOptimizer";
 import LoadingText from "@/components/LoadingText";
@@ -50,7 +47,6 @@ export default function Home() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
   const [isMounted, setIsMounted] = useState(false);
-  const [showSignInPrompt, setShowSignInPrompt] = useState(false);
   const [newBadges, setNewBadges] = useState<BadgeId[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const { isSignedIn, user, isLoaded } = useUser();
@@ -75,7 +71,6 @@ export default function Home() {
   const analyzeResume = async () => {
     // Auth gate: require sign-in for analysis
     if (!isSignedIn) {
-      setShowSignInPrompt(true);
       signInBtnRef.current?.click();
       return;
     }
