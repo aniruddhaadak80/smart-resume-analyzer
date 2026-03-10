@@ -32,11 +32,26 @@ export async function extractText(formData: FormData) {
                             // Custom text extraction to fix spacing issues
                             let text = "";
                             pdfData.formImage.Pages.forEach((page: any) => {
-                                page.Texts.forEach((item: any) => {
-                                    item.R.forEach((t: any) => {
-                                        // decode and append with space
-                                        text += decodeURIComponent(t.T) + " ";
+                                // Sort texts by Y then X
+                                const sortedTexts = [...page.Texts].sort((a: any, b: any) => {
+                                    if (Math.abs(a.y - b.y) < 0.1) {
+                                        return a.x - b.x;
+                                    }
+                                    return a.y - b.y;
+                                });
+
+                                let lastY = -1;
+                                sortedTexts.forEach((item: any) => {
+                                    if (lastY !== -1 && Math.abs(item.y - lastY) >= 0.1) {
+                                        text += "\n";
+                                    } else if (lastY !== -1) {
+                                        text += " ";
+                                    }
+
+                                    item.R.forEach((r: any) => {
+                                        text += decodeURIComponent(r.T);
                                     });
+                                    lastY = item.y;
                                 });
                                 text += "\n";
                             });
