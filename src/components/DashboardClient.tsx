@@ -130,7 +130,7 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
         e.stopPropagation();
         if (!item.content) return;
 
-        const data = JSON.parse(item.content);
+        const data = typeof item.content === 'string' ? JSON.parse(item.content) : item.content;
         const fileName = item.fileName || 'Resume';
 
         try {

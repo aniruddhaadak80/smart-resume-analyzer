@@ -47,11 +47,11 @@ export default async function DashboardPage() {
                 createdAt: job.createdAt,
                 fileType: 'JOB',
                 actionType: 'TRACKER',
-                content: JSON.stringify({
+                content: {
                     company: job.company,
                     role: job.jobTitle,
                     status: job.status
-                })
+                }
             }));
 
             serverHistory = [...serverHistory, ...formattedJobApps]
