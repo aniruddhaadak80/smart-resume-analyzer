@@ -3,8 +3,14 @@
 import mammoth from "mammoth";
 import { GoogleGenAI } from "@google/genai";
 import { generateContentWithRetry } from "@/lib/gemini";
+import { auth } from "@clerk/nextjs/server";
 
 export async function extractText(formData: FormData) {
+    const { userId } = await auth();
+    if (!userId) {
+        return { success: false, error: "Not authenticated" };
+    }
+
     try {
         const file = formData.get("file") as File;
         if (!file) {

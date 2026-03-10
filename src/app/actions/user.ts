@@ -2,9 +2,11 @@
 
 import { logActivity } from "@/lib/activity-logger";
 import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 
-export async function logLogin(userId: string) {
-    if (!userId) return;
+export async function logLogin(providedUserId: string) {
+    const { userId } = await auth();
+    if (!userId || userId !== providedUserId) return { logged: false };
 
     // Use a short-lived cookie to strictly prevent spamming the database on every page load
     const cookieStore = await cookies();
