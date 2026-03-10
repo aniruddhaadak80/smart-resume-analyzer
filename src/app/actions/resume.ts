@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "@/lib/activity-logger";
+import { auth } from "@clerk/nextjs/server";
 
 export async function saveResume(data: {
     userId: string;
@@ -13,6 +14,11 @@ export async function saveResume(data: {
     content: any; // The optimization or analysis JSON
     actionType?: "OPTIMIZE" | "ANALYZE" | "COACH";
 }) {
+    const { userId } = await auth();
+    if (!userId || userId !== data.userId) {
+        return { success: false, error: "Unauthorized" };
+    }
+
     try {
         await prisma.resume.create({
             data: {
@@ -41,7 +47,12 @@ export async function saveResume(data: {
     }
 }
 
-export async function getUserResumes(userId: string) {
+export async function getUserResumes() {
+    const { userId } = await auth();
+    if (!userId) {
+        return { success: false, error: "Not authenticated" };
+    }
+
     try {
         const resumes = await prisma.resume.findMany({
             where: { userId },

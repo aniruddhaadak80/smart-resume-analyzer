@@ -1,12 +1,18 @@
 'use server';
 
 import { SarvamAIClient } from 'sarvamai';
+import { auth } from '@clerk/nextjs/server';
 
 const client = new SarvamAIClient({
     apiSubscriptionKey: process.env.SARVAM_API_KEY as string,
 });
 
 export async function transcribeAudio(formData: FormData) {
+    const { userId } = await auth();
+    if (!userId) {
+        return { success: false, error: 'Not authenticated' };
+    }
+
     try {
         const file = formData.get('audio') as File;
         if (!file) {
@@ -40,6 +46,11 @@ export async function transcribeAudio(formData: FormData) {
 }
 
 export async function generateCoachResponse(history: { role: 'user' | 'assistant' | 'system', content: string }[]) {
+    const { userId } = await auth();
+    if (!userId) {
+        return { success: false, error: 'Not authenticated' };
+    }
+
     try {
         // casting history to any to bypass potential SDK type mismatches if they are strict about 'ChatCompletionRequestMessage'
         const response = await client.chat.completions({

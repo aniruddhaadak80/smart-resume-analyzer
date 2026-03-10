@@ -2,12 +2,18 @@
 
 import { GoogleGenAI } from "@google/genai";
 import { generateContentWithRetry, analyzeResumeWithGemini } from "@/lib/gemini";
+import { auth } from "@clerk/nextjs/server";
 
 export async function optimizeResume(
   resumeText: string,
   jobDescription: string,
   options: { includeToneCritique?: boolean } = {}
 ) {
+  const { userId } = await auth();
+  if (!userId) {
+    return { success: false, error: "Not authenticated" };
+  }
+
   const { includeToneCritique = false } = options;
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
