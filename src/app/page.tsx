@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight } from "lucide-react";
+import { Loader2, UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, Sparkles, X } from "lucide-react";
 import Image from "next/image";
 import InterviewCoach from "@/components/InterviewCoach";
 import ResumeOptimizer from "@/components/ResumeOptimizer";
@@ -18,6 +18,7 @@ import { fireConfetti, checkBadges, type BadgeId } from "@/lib/gamification";
 import { BadgeUnlockToast } from "@/components/Badges";
 import { saveResume } from "@/app/actions/resume";
 import { useToast } from "@/components/Toast";
+import { summarizeJD } from "@/app/actions/summarize";
 
 import { Variants } from "framer-motion";
 
@@ -49,6 +50,24 @@ export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const [newBadges, setNewBadges] = useState<BadgeId[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [jdSummary, setJdSummary] = useState<string[] | null>(null);
+  const [isSummarizing, setIsSummarizing] = useState(false);
+
+  const handleSummarize = async () => {
+    if (!jobDescription || jobDescription.trim().length < 50) {
+      showToast('Paste a job description first (at least 50 characters).', 'error');
+      return;
+    }
+    setIsSummarizing(true);
+    setJdSummary(null);
+    const res = await summarizeJD(jobDescription);
+    setIsSummarizing(false);
+    if (res.success) {
+      setJdSummary(res.data);
+    } else {
+      showToast(res.error, 'error');
+    }
+  };
   const { isSignedIn, user, isLoaded } = useUser();
   const { showToast } = useToast();
   const signInBtnRef = useRef<HTMLButtonElement>(null);
@@ -242,8 +261,54 @@ export default function Home() {
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
                           <Label className="text-base font-medium text-slate-300">Job Description</Label>
-                          <Badge variant="outline" className="text-[10px] text-slate-500 border-slate-800 uppercase tracking-wider">Optional</Badge>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={handleSummarize}
+                              disabled={isSummarizing}
+                              className="flex items-center gap-1.5 text-[11px] font-medium text-teal-400 hover:text-teal-300 border border-teal-500/30 hover:border-teal-400/60 bg-teal-500/10 hover:bg-teal-500/20 px-2.5 py-1 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {isSummarizing
+                                ? <><Loader2 className="h-3 w-3 animate-spin" /> Summarizing...</>
+                                : <><Sparkles className="h-3 w-3" /> Summarize</>}
+                            </button>
+                            <Badge variant="outline" className="text-[10px] text-slate-500 border-slate-800 uppercase tracking-wider">Optional</Badge>
+                          </div>
                         </div>
+
+                        <AnimatePresence>
+                          {jdSummary && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -8 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -8 }}
+                              transition={{ duration: 0.25 }}
+                              className="relative rounded-xl border border-teal-500/20 bg-teal-950/30 backdrop-blur px-4 pt-3 pb-4"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="flex items-center gap-1.5 text-xs font-semibold text-teal-400 uppercase tracking-wider">
+                                  <Sparkles className="h-3 w-3" /> Key Requirements
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setJdSummary(null)}
+                                  className="text-slate-500 hover:text-slate-300 transition-colors"
+                                >
+                                  <X className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                              <ul className="space-y-1.5">
+                                {jdSummary.map((req, i) => (
+                                  <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-teal-400 shrink-0" />
+                                    {req}
+                                  </li>
+                                ))}
+                              </ul>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+
                         <Textarea
                           placeholder="Paste the job description here..."
                           className="h-[220px] bg-slate-900/40 border-slate-700/50 resize-none focus:ring-teal-500/50 focus:border-teal-500/50 text-slate-300 leading-relaxed rounded-2xl"
