@@ -173,3 +173,26 @@ export const analyzeResumeWithGemini = async (
         throw new Error(`Gemini Analysis Failed: ${errorMessage}`);
     }
 };
+
+export const summarizeJobDescription = async (jobText: string): Promise<string[]> => {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+
+    const prompt = `
+You are an expert technical recruiter.
+Extract the 5 most important core requirements (skills, experience, or qualifications) from the job description below.
+Return ONLY a raw JSON object with a single key "requirements" whose value is an array of 5 concise strings.
+Do not include markdown, code fences, or any explanation — just the JSON.
+
+JOB DESCRIPTION:
+${jobText}
+    `;
+
+    const response = await generateContentWithRetry(ai, {
+        model: "gemini-3-flash-preview",
+        contents: prompt,
+    });
+
+    const text = (response.text ?? "").replace(/```json/g, "").replace(/```/g, "").trim();
+    const parsed = JSON.parse(text) as { requirements: string[] };
+    return parsed.requirements;
+};
