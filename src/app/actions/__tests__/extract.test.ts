@@ -1,10 +1,25 @@
 
+import Module from 'module';
+
+// Mock Clerk auth to bypass both server-only restriction and request context requirements
+const clerkMock = {
+    auth: async () => ({ userId: 'mock-user-id' })
+};
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function (this: any, id: string, ...args: any[]) {
+    if (id === '@clerk/nextjs/server') {
+        return clerkMock;
+    }
+    return originalRequire.apply(this, [id, ...args]);
+};
+
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { extractText } from '../extract';
 
 describe('extractText', () => {
     it('should return an error for unsupported file types', async () => {
+        const { extractText } = await import('../extract');
+
         // Mock a File with an unsupported type
         const mockFile = {
             arrayBuffer: async () => new ArrayBuffer(0),
@@ -26,6 +41,8 @@ describe('extractText', () => {
     });
 
     it('should return an error when no file is provided', async () => {
+        const { extractText } = await import('../extract');
+
         // Mock FormData with no file
         const formData = {
             get: (_key: string) => null
