@@ -1,4 +1,4 @@
-# CareerZen: AI Powered Smart Resume Analyzer 🚀
+# CareerZen: AI-Powered Smart Resume Analyzer 
 
 > **Land Your Dream Job Faster.** Upload your resume and get instant, AI-driven feedback to beat the ATS and impress recruiters. Tailored interview prep included.
 
