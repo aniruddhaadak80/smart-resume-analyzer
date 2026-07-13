@@ -15,7 +15,7 @@
 [![Sarvam AI](https://img.shields.io/badge/Sarvam_AI-Speech_To_Text-purple?logo=ai)](https://www.sarvam.ai/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[Live Demo](https://careerzen.vercel.app/) | [Project Report (PDF)](./Final Year Project Report.pdf) | [Report Bug](https://github.com/aniruddhaadak80/smart-resume-analyzer/issues) | [Request Feature](https://github.com/aniruddhaadak80/smart-resume-analyzer/issues) | [Contributing Guide](./CONTRIBUTING.md)
+[Live Demo](https://careerzen.vercel.app/) | [Project Report (PDF)](./Final%20Year%20Project%20Report.pdf) | [Report Bug](https://github.com/aniruddhaadak80/smart-resume-analyzer/issues) | [Request Feature](https://github.com/aniruddhaadak80/smart-resume-analyzer/issues) | [Contributing Guide](./CONTRIBUTING.md)
 
 </div>
 
