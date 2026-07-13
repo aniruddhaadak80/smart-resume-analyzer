@@ -6,11 +6,11 @@ const clerkMock = {
     auth: async () => ({ userId: 'mock-user-id' })
 };
 const originalRequire = Module.prototype.require;
-Module.prototype.require = function (this: any, id: string, ...args: any[]) {
+Module.prototype.require = function (this: any, id: string) {
     if (id === '@clerk/nextjs/server') {
         return clerkMock;
     }
-    return originalRequire.apply(this, [id, ...args]);
+    return originalRequire.call(this, id);
 };
 
 import { describe, it } from 'node:test';
