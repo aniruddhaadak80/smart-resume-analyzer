@@ -1,0 +1,5 @@
+# Code owners for smart-resume-analyzer
+* @aniruddhaadak80
+/.github/ @aniruddhaadak80
+/src/ @aniruddhaadak80
+/prisma/ @aniruddhaadak80
