@@ -2,7 +2,14 @@
 
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Clock, LogIn, UserPlus, BarChart, Sparkles, Briefcase, MessageSquare, GraduationCap } from 'lucide-react';
+import { Clock, LogIn, UserPlus, BarChart, Sparkles, Briefcase, MessageSquare, GraduationCap, CalendarRange, X } from 'lucide-react';
+import {
+    DateRange,
+    EMPTY_DATE_RANGE,
+    filterActivitiesByDateRange,
+    hasDateRange,
+    isValidDateRange,
+} from '@/lib/timeline-filter';
 
 const ACTION_CONFIG = {
     'LOGIN': { icon: LogIn, color: 'text-emerald-400', bg: 'bg-emerald-900/30 text-emerald-400', label: 'Logged In' },
@@ -16,11 +23,18 @@ const ACTION_CONFIG = {
 
 export default function TimelineClient({ serverActivities }: { serverActivities: any[] }) {
     const [filter, setFilter] = useState<string>('ALL');
+    const [dateRange, setDateRange] = useState<DateRange>(EMPTY_DATE_RANGE);
 
     const filtered = useMemo(() => {
-        if (filter === 'ALL') return serverActivities;
-        return serverActivities.filter(a => a.actionType === filter);
-    }, [serverActivities, filter]);
+        const byActionType = filter === 'ALL'
+            ? serverActivities
+            : serverActivities.filter(a => a.actionType === filter);
+
+        return filterActivitiesByDateRange(byActionType, dateRange);
+    }, [serverActivities, filter, dateRange]);
+
+    const dateRangeActive = hasDateRange(dateRange);
+    const dateRangeValid = isValidDateRange(dateRange);
 
     const groupedByDate = useMemo(() => {
         const groups: Record<string, any[]> = {};
@@ -63,10 +77,74 @@ export default function TimelineClient({ serverActivities }: { serverActivities:
                 </div>
             </div>
 
+            {/* Custom date range filter */}
+            <div className="mb-8 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-sm">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-300 sm:mr-2 sm:pb-2.5">
+                        <CalendarRange className="h-4 w-4 text-violet-400" />
+                        <span>Date range</span>
+                    </div>
+
+                    <div className="flex-1">
+                        <label htmlFor="timeline-from" className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-500">
+                            From
+                        </label>
+                        <input
+                            id="timeline-from"
+                            type="date"
+                            value={dateRange.from}
+                            max={dateRange.to || undefined}
+                            onChange={(e) => setDateRange(prev => ({ ...prev, from: e.target.value }))}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-sm text-slate-200 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/40"
+                        />
+                    </div>
+
+                    <div className="flex-1">
+                        <label htmlFor="timeline-to" className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-500">
+                            To
+                        </label>
+                        <input
+                            id="timeline-to"
+                            type="date"
+                            value={dateRange.to}
+                            min={dateRange.from || undefined}
+                            onChange={(e) => setDateRange(prev => ({ ...prev, to: e.target.value }))}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-sm text-slate-200 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/40"
+                        />
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => setDateRange(EMPTY_DATE_RANGE)}
+                        disabled={!dateRangeActive}
+                        className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:border-slate-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                        <X className="h-4 w-4" />
+                        Clear
+                    </button>
+                </div>
+
+                <div className="mt-3 flex flex-col gap-1 text-xs sm:flex-row sm:items-center sm:justify-between">
+                    <p aria-live="polite" className="text-slate-500">
+                        Showing {filtered.length} of {serverActivities.length} event{serverActivities.length === 1 ? '' : 's'}
+                        {dateRangeActive && ' in the selected range'}
+                    </p>
+                    {!dateRangeValid && (
+                        <p role="alert" className="text-rose-400">
+                            The start date must be on or before the end date.
+                        </p>
+                    )}
+                </div>
+            </div>
+
             {Object.keys(groupedByDate).length === 0 ? (
                 <div className="text-center py-20 text-slate-500">
                     <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>No activity recorded yet for this filter.</p>
+                    <p>
+                        {dateRangeActive
+                            ? 'No activity recorded in the selected date range.'
+                            : 'No activity recorded yet for this filter.'}
+                    </p>
                 </div>
             ) : (
                 <div className="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-800 before:to-transparent">
