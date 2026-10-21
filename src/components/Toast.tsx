@@ -179,7 +179,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
             {children}
 
             {/* Toast container - bottom right */}
-            <div className="fixed bottom-4 right-4 z-[9999] flex flex-col gap-3">
+            <div className="fixed bottom-4 right-4 z-[9999] flex flex-col gap-3 print:hidden">
                 <AnimatePresence mode="popLayout">
                     {toasts.map((toast) => (
                         <ToastItem

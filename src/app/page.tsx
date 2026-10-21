@@ -155,7 +155,7 @@ export default function Home() {
   if (!isMounted) return null;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-50 overflow-x-hidden selection:bg-teal-500/30">
+    <main className="min-h-screen bg-slate-950 text-slate-50 overflow-x-hidden selection:bg-teal-500/30 print:hidden">
 
       {/* 🏅 Badge unlock notification */}
       {newBadges.length > 0 && (
