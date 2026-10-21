@@ -232,12 +232,13 @@ export default function ResumeOptimizer({
     const [isDownloading, setIsDownloading] = useState<'PDF' | 'DOCX' | null>(null);
     const [includeToneCritique, setIncludeToneCritique] = useState(false);
     const { user } = useUser();
-    const { showToast } = useToast();
+    const { showToast, updateToast } = useToast();
 
     // ── Handlers ────────────────────────────────────────────────────────────
 
     const handleOptimize = async () => {
         setIsOptimizing(true);
+        const toastId = showToast('Optimizing your resume… this can take a little while.', 'loading');
         try {
             const result = await optimizeResume(resumeText, jobDescription, { includeToneCritique });
             if (result.success) {
@@ -245,13 +246,13 @@ export default function ResumeOptimizer({
                 const toastMsg = includeToneCritique
                     ? 'Resume optimized + tone critiqued! 🎉'
                     : 'Resume optimized successfully! 🎉';
-                showToast(toastMsg, 'success', 5000);
+                updateToast(toastId, toastMsg, 'success', 5000);
             } else {
-                showToast('Optimization failed. Please try again.', 'error', 5000);
+                updateToast(toastId, 'We could not optimize your resume. Please try again.', 'error', 5000);
             }
         } catch (error) {
             console.error(error);
-            showToast('Something went wrong. Please try again.', 'error', 5000);
+            updateToast(toastId, 'Something went wrong. Please try again.', 'error', 5000);
         } finally {
             setIsOptimizing(false);
         }

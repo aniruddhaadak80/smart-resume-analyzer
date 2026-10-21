@@ -87,7 +87,7 @@ export default function TrackerClient() {
             setShowAddModal(false);
             loadApplications();
         } else {
-            showToast(result.error || 'Failed to add application', 'error');
+            showToast(result.error || 'We could not add this application. Please try again.', 'error');
         }
     };
 
@@ -95,7 +95,9 @@ export default function TrackerClient() {
         const result = await deleteApplication(id);
         if (result.success) {
             setApplications(prev => prev.filter(a => a.id !== id));
-            showToast('Application removed', 'success');
+            showToast('Application removed!', 'success');
+        } else {
+            showToast(result.error || 'We could not remove this application. Please try again.', 'error');
         }
     };
 
@@ -121,7 +123,7 @@ export default function TrackerClient() {
 
         const result = await updateApplication(draggedCard, { status: newStatus });
         if (!result.success) {
-            showToast('Failed to move application', 'error');
+            showToast('We could not move this application. Please try again.', 'error');
             loadApplications(); // Revert
         } else {
             showToast(`Moved to ${COLUMNS.find(c => c.id === newStatus)?.title}`, 'success');

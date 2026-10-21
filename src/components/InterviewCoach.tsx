@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Mic, MicOff, Send, MessageSquare, User, Bot, Volume2, Sparkles, Loader2, ChevronRight, PlayCircle } from "lucide-react";
 import { transcribeAudio, generateCoachResponse } from '@/app/actions/sarvam';
+import { useToast } from './Toast';
 
 interface InterviewCoachProps {
     questions: { question: string, answer: string }[];
@@ -25,6 +26,7 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
     const [isRecording, setIsRecording] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [inputText, setInputText] = useState('');
+    const { showToast } = useToast();
 
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
@@ -180,9 +182,11 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
                     ...prev,
                     { role: 'assistant', content: "Sorry, I couldn't generate a response. Please try again.", timestamp: Date.now() }
                 ]);
+                showToast('We could not get a coaching reply. Please try again.', 'error');
             }
         } catch (error) {
             console.error(error);
+            showToast('We could not get a coaching reply. Please try again.', 'error');
         } finally {
             setIsProcessing(false);
         }
@@ -239,6 +243,7 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
                     }
                 } catch (err) {
                     console.error(err);
+                    showToast('We could not hear that. Please try again or type your answer.', 'error');
                     setIsProcessing(false);
                 }
 
@@ -250,7 +255,7 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
             setIsRecording(true);
         } catch (err) {
             console.error("Error accessing microphone:", err);
-            alert("Could not access microphone. Please ensuring permission is granted.");
+            showToast('We need microphone access to answer out loud. Please allow it and try again.', 'error');
         }
     };
 

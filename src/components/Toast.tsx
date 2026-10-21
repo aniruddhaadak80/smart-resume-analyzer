@@ -2,9 +2,9 @@
 
 import { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle, AlertCircle, X, Sparkles } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, X, Sparkles, Loader2 } from 'lucide-react';
 
-type ToastType = 'success' | 'error' | 'warning' | 'info';
+type ToastType = 'success' | 'error' | 'warning' | 'info' | 'loading';
 
 interface Toast {
     id: string;
@@ -14,7 +14,12 @@ interface Toast {
 }
 
 interface ToastContextType {
-    showToast: (message: string, type?: ToastType, duration?: number) => void;
+    /** Shows a toast and returns its id so it can be updated or dismissed later. */
+    showToast: (message: string, type?: ToastType, duration?: number) => string;
+    /** Replaces the message/type of an existing toast — used to turn a loading toast into a result. */
+    updateToast: (id: string, message: string, type?: ToastType, duration?: number) => void;
+    /** Removes a toast immediately. */
+    dismissToast: (id: string) => void;
 }
 
 const ToastContext = createContext<ToastContextType | null>(null);
@@ -52,14 +57,24 @@ const toastStyles: Record<ToastType, { bg: string; border: string; icon: React.R
         icon: <Sparkles className="w-6 h-6 text-white" />,
         gradient: 'from-blue-400 via-indigo-400 to-purple-400',
     },
+    loading: {
+        bg: 'bg-gradient-to-r from-slate-600 to-slate-500',
+        border: 'border-slate-300/60',
+        icon: <Loader2 className="w-6 h-6 text-white animate-spin" />,
+        gradient: 'from-slate-400 via-slate-300 to-slate-400',
+    },
 };
 
 const ToastItem = ({ toast, onClose }: { toast: Toast; onClose: () => void }) => {
     const style = toastStyles[toast.type];
     const [progress, setProgress] = useState(100);
     const duration = toast.duration || 5000;
+    const isLoading = toast.type === 'loading';
 
     useEffect(() => {
+        // Loading toasts stay on screen until they are updated or dismissed.
+        if (isLoading) return;
+
         const interval = setInterval(() => {
             setProgress((prev) => Math.max(0, prev - (100 / (duration / 100))));
         }, 100);
@@ -72,10 +87,12 @@ const ToastItem = ({ toast, onClose }: { toast: Toast; onClose: () => void }) =>
             clearInterval(interval);
             clearTimeout(timeout);
         };
-    }, [duration, onClose]);
+    }, [duration, onClose, isLoading]);
 
     return (
         <motion.div
+            role="status"
+            aria-live="polite"
             initial={{ opacity: 0, x: 100, scale: 0.8 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 100, scale: 0.8 }}
@@ -122,14 +139,16 @@ const ToastItem = ({ toast, onClose }: { toast: Toast; onClose: () => void }) =>
             </div>
 
             {/* Progress bar */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
-                <motion.div
-                    className="h-full bg-white/50"
-                    initial={{ width: '100%' }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.1 }}
-                />
-            </div>
+            {!isLoading && (
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
+                    <motion.div
+                        className="h-full bg-white/50"
+                        initial={{ width: '100%' }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ duration: 0.1 }}
+                    />
+                </div>
+            )}
 
             {/* Sparkle particles for success */}
             {toast.type === 'success' && (
@@ -163,11 +182,21 @@ const ToastItem = ({ toast, onClose }: { toast: Toast; onClose: () => void }) =>
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     const [toasts, setToasts] = useState<Toast[]>([]);
 
-    const showToast = useCallback((message: string, type: ToastType = 'success', duration: number = 5000) => {
+    const showToast = useCallback((message: string, type: ToastType = 'success', duration: number = 5000): string => {
         // Cap duration at 20 seconds as requested
         const cappedDuration = Math.min(duration, 20000);
         const id = Math.random().toString(36).substr(2, 9);
         setToasts((prev) => [...prev, { id, message, type, duration: cappedDuration }]);
+        return id;
+    }, []);
+
+    const updateToast = useCallback((id: string, message: string, type: ToastType = 'success', duration: number = 5000) => {
+        const cappedDuration = Math.min(duration, 20000);
+        setToasts((prev) => prev.map((t) => (t.id === id ? { ...t, message, type, duration: cappedDuration } : t)));
+    }, []);
+
+    const dismissToast = useCallback((id: string) => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
     }, []);
 
     const removeToast = useCallback((id: string) => {
@@ -175,7 +204,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <ToastContext.Provider value={{ showToast }}>
+        <ToastContext.Provider value={{ showToast, updateToast, dismissToast }}>
             {children}
 
             {/* Toast container - bottom right */}

@@ -64,12 +64,13 @@ export default function Home() {
     setIsSummarizing(false);
     if (res.success) {
       setJdSummary(res.data);
+      showToast('Job description summarised!', 'success');
     } else {
       showToast(res.error, 'error');
     }
   };
   const { isSignedIn, user, isLoaded } = useUser();
-  const { showToast } = useToast();
+  const { showToast, updateToast } = useToast();
   const signInBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -96,11 +97,14 @@ export default function Home() {
 
     if (!file) {
       setError('Please upload a resume to proceed.');
+      showToast('Please upload a resume file first.', 'error');
       return;
     }
 
     setLoading(true);
     setError('');
+
+    const toastId = showToast('Analyzing your resume… this can take a little while.', 'loading');
 
     const formData = new FormData();
     formData.append('resume', file);
@@ -124,8 +128,11 @@ export default function Home() {
       if (earned.length > 0) setNewBadges(earned);
       if (score >= 90) fireConfetti();
 
+      updateToast(toastId, `Analysis complete! Match score: ${score}%.`, 'success');
+
     } catch (err: any) {
       setError(err.message || 'Something went wrong.');
+      updateToast(toastId, err.message || 'Analysis failed. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -135,7 +142,7 @@ export default function Home() {
     if (!user || !result) return;
     setIsSaving(true);
     try {
-      await saveResume({
+      const saveResult = await saveResume({
         userId: user.id,
         fileName: file?.name || "MyResume",
         jobTitle: jobDescription ? "Target Role" : "General Analysis",
@@ -144,9 +151,14 @@ export default function Home() {
         content: result,
         actionType: "ANALYZE"
       });
-      showToast('✨ Saved to Dashboard! Your analysis is safe in the cloud.', 'success', 6000);
+
+      if (saveResult.success) {
+        showToast('Saved! You can find this analysis in your dashboard.', 'success', 6000);
+      } else {
+        showToast(saveResult.error || 'We could not save your analysis. Please try again.', 'error', 5000);
+      }
     } catch (e) {
-      showToast('Failed to save. Please try again.', 'error', 5000);
+      showToast('We could not save your analysis. Please try again.', 'error', 5000);
     } finally {
       setIsSaving(false);
     }
