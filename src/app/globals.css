@@ -203,3 +203,86 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(20, 184, 166, 0.5) rgba(15, 23, 42, 0.5);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Print stylesheet
+   Renders a clean, single-column resume on A4 / US Letter paper with no
+   navigation, buttons, background colours or other app chrome.
+   ───────────────────────────────────────────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  /* Hide the app chrome: navigation, footer, dialog backdrop and toasts */
+  header,
+  footer,
+  nav,
+  [data-slot="dialog-overlay"] {
+    display: none !important;
+  }
+
+  /* The app shell is a full-height flex column on screen; on paper it must
+     collapse so the resume starts on the first page. */
+  .min-h-screen {
+    min-height: 0 !important;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+
+  /* The dialog that hosts the optimizer result becomes a plain block of paper */
+  [data-slot="dialog-content"] {
+    position: static !important;
+    transform: none !important;
+    max-height: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  .printable-resume {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  .printable-resume a {
+    color: #111111 !important;
+    text-decoration: none !important;
+  }
+
+  /* Keep sections and single entries from being split across pages */
+  .printable-section {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  .printable-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

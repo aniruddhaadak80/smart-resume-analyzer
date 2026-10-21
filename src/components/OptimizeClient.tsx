@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Sparkles, Loader2, CheckCircle2, Download, Save, FileText, FileType2, Upload, Briefcase } from 'lucide-react';
+import { ArrowLeft, Sparkles, Loader2, CheckCircle2, Download, Save, FileText, FileType2, Upload, Briefcase, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,10 +11,12 @@ import { optimizeResume } from '@/app/actions/optimize';
 import { saveResume } from '@/app/actions/resume';
 import { extractText } from '@/app/actions/extract';
 import { useUser, SignInButton } from '@clerk/nextjs';
+import { createPortal } from 'react-dom';
 import { generateDocx } from '@/lib/docx-generator';
 import { saveAs } from 'file-saver';
 import { pdf } from '@react-pdf/renderer';
 import { ResumePDF } from './ResumePDF';
+import PrintableResume from './PrintableResume';
 import { useToast } from './Toast';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
@@ -184,6 +186,13 @@ export default function OptimizeClient() {
         }
     };
 
+    const handlePrint = () => {
+        if (!optimizedData) return;
+        // The printable resume is always mounted (hidden on screen) so the
+        // browser print dialog renders it straight away.
+        window.print();
+    };
+
     const handleSave = async () => {
         if (!optimizedData || !user) {
             showToast('Please sign in to save resumes.', 'error');
@@ -219,7 +228,16 @@ export default function OptimizeClient() {
     }
 
     return (
-        <main className="p-6 md:p-12">
+        <main className="p-6 md:p-12 print:hidden">
+            {/* Paper-first resume, portalled to <body> so the print stylesheet can
+                strip the app chrome without hiding the resume itself. */}
+            {optimizedData && createPortal(
+                <div className="hidden print:block">
+                    <PrintableResume data={optimizedData} />
+                </div>,
+                document.body
+            )}
+
             {/* Hidden sign-in trigger for unauthenticated users */}
             <SignInButton mode="modal" forceRedirectUrl="/optimize">
                 <button ref={signInBtnRef} className="hidden" aria-hidden="true" />
@@ -408,7 +426,7 @@ export default function OptimizeClient() {
                                         <p className="text-emerald-400/80">Your resume is now targeting a <span className="font-bold text-emerald-300">100% Match Score</span></p>
                                     </div>
                                 </div>
-                                <div className="flex gap-3">
+                                <div className="flex gap-3 flex-wrap justify-end">
                                     <Button
                                         onClick={() => handleDownload('PDF')}
                                         disabled={isDownloading !== null}
@@ -424,6 +442,14 @@ export default function OptimizeClient() {
                                     >
                                         {isDownloading === 'DOCX' ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileType2 className="h-4 w-4" />}
                                         Word
+                                    </Button>
+                                    <Button
+                                        onClick={handlePrint}
+                                        variant="outline"
+                                        className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                                    >
+                                        <Printer className="h-4 w-4" />
+                                        Print
                                     </Button>
                                     <Button
                                         onClick={handleSave}
