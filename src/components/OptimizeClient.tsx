@@ -81,7 +81,7 @@ export default function OptimizeClient() {
     const [resumeFile, setResumeFile] = useState<File | null>(null);
     const [jdFile, setJdFile] = useState<File | null>(null);
     const { user, isSignedIn } = useUser();
-    const { showToast } = useToast();
+    const { showToast, updateToast } = useToast();
     const router = useRouter();
     const signInBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -146,17 +146,18 @@ export default function OptimizeClient() {
         }
 
         setIsOptimizing(true);
+        const toastId = showToast('Optimizing your resume… this can take a little while.', 'loading');
         try {
             const result = await optimizeResume(resumeText, jobDescription);
             if (result.success) {
                 setOptimizedData(result.data);
-                showToast('Resume optimized successfully! 🎉', 'success', 5000);
+                updateToast(toastId, 'Resume optimized successfully! 🎉', 'success', 5000);
             } else {
-                showToast('Optimization failed. Please try again.', 'error', 5000);
+                updateToast(toastId, 'We could not optimize your resume. Please try again.', 'error', 5000);
             }
         } catch (error) {
             console.error(error);
-            showToast('Something went wrong. Please try again.', 'error', 5000);
+            updateToast(toastId, 'Something went wrong. Please try again.', 'error', 5000);
         } finally {
             setIsOptimizing(false);
         }

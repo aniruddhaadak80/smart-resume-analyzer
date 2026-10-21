@@ -166,10 +166,13 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                     setHistory(prev => prev.map(h => h.id === id ? { ...h, fileName: editValue } : h));
                     setFilteredHistory(prev => prev.map(h => h.id === id ? { ...h, fileName: editValue } : h));
                     setEditingId(null);
-                    showToast('Resume renamed successfully!', 'success');
+                    showToast('Resume renamed!', 'success');
+                } else {
+                    setEditingId(null);
+                    showToast('We could not rename this resume. Please try again.', 'error');
                 }
             } catch (error) {
-                showToast('Failed to rename.', 'error');
+                showToast('We could not rename this resume. Please try again.', 'error');
             }
         }
     };
@@ -187,10 +190,13 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                     setHistory(prev => prev.filter(h => h.id !== id));
                     setFilteredHistory(prev => prev.filter(h => h.id !== id));
                     setDeletingId(null);
-                    showToast('Resume deleted successfully!', 'success');
+                    showToast('Resume deleted!', 'success');
+                } else {
+                    setDeletingId(null);
+                    showToast('We could not delete this resume. Please try again.', 'error');
                 }
             } catch (error) {
-                showToast('Failed to delete.', 'error');
+                showToast('We could not delete this resume. Please try again.', 'error');
             }
         }
     };
