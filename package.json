@@ -23,7 +23,7 @@
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "docx": "^9.5.1",
+    "docx": "^9.12.0",
     "file-saver": "^2.0.5",
     "framer-motion": "^12.35.1",
     "gsap": "^3.14.2",
