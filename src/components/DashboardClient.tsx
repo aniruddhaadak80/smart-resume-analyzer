@@ -16,6 +16,7 @@ import { ResumePDF } from './ResumePDF';
 import AdvancedSearch, { SearchFilters } from './AdvancedSearch';
 import { useToast } from './Toast';
 import { BadgeCollection } from './Badges';
+import EmptyState, { EmptyStateVariant } from './EmptyState';
 
 export default function DashboardClient({ serverHistory }: { serverHistory: any[] }) {
     const [history, setHistory] = useState<any[]>([]);
@@ -120,6 +121,51 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
         activeCategory === 'all' ? true : (item.actionType || 'OPTIMIZE') === activeCategory
     );
 
+    // How many items exist for the active category, ignoring the search filters.
+    // Used to tell "there is genuinely nothing here" apart from "your filters hid everything".
+    const categoryCount = activeCategory === 'all'
+        ? history.length
+        : history.filter(item => (item.actionType || 'OPTIMIZE') === activeCategory).length;
+
+    const EMPTY_COPY: Record<'all' | 'ANALYZE' | 'OPTIMIZE' | 'TRACKER', {
+        variant: EmptyStateVariant;
+        title: string;
+        description: string;
+        actionLabel: string;
+        actionHref: string;
+    }> = {
+        all: {
+            variant: 'analyses',
+            title: 'Nothing saved yet',
+            description: 'Analyse or optimise a resume and save it here to keep every version in one place.',
+            actionLabel: 'Analyse your first resume',
+            actionHref: '/',
+        },
+        ANALYZE: {
+            variant: 'analyses',
+            title: 'No saved analyses yet',
+            description: 'Run an ATS analysis and save it to see your score history over time.',
+            actionLabel: 'Analyse a resume',
+            actionHref: '/',
+        },
+        OPTIMIZE: {
+            variant: 'resumes',
+            title: 'No saved resumes yet',
+            description: 'Optimise your resume for a job description and save the result here.',
+            actionLabel: 'Optimise a resume',
+            actionHref: '/optimize',
+        },
+        TRACKER: {
+            variant: 'tracker',
+            title: 'No applications yet',
+            description: 'Add the jobs you are applying to and track them from wishlist to offer.',
+            actionLabel: 'Track a job',
+            actionHref: '/tracker',
+        },
+    };
+
+    const emptyCopy = EMPTY_COPY[activeCategory];
+
     const handleView = (item: any) => {
         if (item.source === 'cloud' && item.id) {
             router.push(`/resume/${item.id}`);
@@ -166,10 +212,13 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                     setHistory(prev => prev.map(h => h.id === id ? { ...h, fileName: editValue } : h));
                     setFilteredHistory(prev => prev.map(h => h.id === id ? { ...h, fileName: editValue } : h));
                     setEditingId(null);
-                    showToast('Resume renamed successfully!', 'success');
+                    showToast('Resume renamed!', 'success');
+                } else {
+                    setEditingId(null);
+                    showToast('We could not rename this resume. Please try again.', 'error');
                 }
             } catch (error) {
-                showToast('Failed to rename.', 'error');
+                showToast('We could not rename this resume. Please try again.', 'error');
             }
         }
     };
@@ -187,10 +236,13 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                     setHistory(prev => prev.filter(h => h.id !== id));
                     setFilteredHistory(prev => prev.filter(h => h.id !== id));
                     setDeletingId(null);
-                    showToast('Resume deleted successfully!', 'success');
+                    showToast('Resume deleted!', 'success');
+                } else {
+                    setDeletingId(null);
+                    showToast('We could not delete this resume. Please try again.', 'error');
                 }
             } catch (error) {
-                showToast('Failed to delete.', 'error');
+                showToast('We could not delete this resume. Please try again.', 'error');
             }
         }
     };
@@ -277,16 +329,26 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                 {/* List */}
                 <div className="grid gap-4">
                     {finalHistory.length === 0 ? (
-                        <div className="text-center py-20 bg-slate-900/50 rounded-2xl border border-slate-800">
-                            <BarChart className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-                            <h3 className="text-xl font-medium text-slate-300">No Records Found</h3>
-                            <p className="text-slate-500 mt-2">No activities match your selected filters.</p>
-                            {activeCategory === 'all' && (
-                                <Button asChild className="mt-6 bg-teal-600 hover:bg-teal-500">
-                                    <Link href="/">Try Analyzer</Link>
-                                </Button>
-                            )}
-                        </div>
+                        categoryCount === 0 ? (
+                            <EmptyState
+                                variant={emptyCopy.variant}
+                                title={emptyCopy.title}
+                                description={emptyCopy.description}
+                                actionLabel={emptyCopy.actionLabel}
+                                actionHref={emptyCopy.actionHref}
+                            />
+                        ) : (
+                            <div className="text-center py-20 bg-slate-900/50 rounded-2xl border border-slate-800">
+                                <BarChart className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+                                <h3 className="text-xl font-medium text-slate-300">No Records Found</h3>
+                                <p className="text-slate-500 mt-2">No activities match your selected filters.</p>
+                                {activeCategory === 'all' && (
+                                    <Button asChild className="mt-6 bg-teal-600 hover:bg-teal-500">
+                                        <Link href="/">Try Analyzer</Link>
+                                    </Button>
+                                )}
+                            </div>
+                        )
                     ) : (
                         finalHistory.map((item, i) => (
                             <motion.div

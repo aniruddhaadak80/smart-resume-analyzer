@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {
     Loader2, Sparkles, CheckCircle2, Save, FileText, FileType2,
-    AlertTriangle, BookOpen, Zap, ShieldCheck, MessageSquareWarning,
+    AlertTriangle, BookOpen, Zap, ShieldCheck, MessageSquareWarning, Printer,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { optimizeResume } from "@/app/actions/optimize";
@@ -14,6 +14,7 @@ import { generateDocx } from '@/lib/docx-generator';
 import { saveAs } from 'file-saver';
 import { pdf } from '@react-pdf/renderer';
 import { ResumePDF } from './ResumePDF';
+import PrintableResume from './PrintableResume';
 import { useToast } from './Toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingText from './LoadingText';
@@ -232,12 +233,13 @@ export default function ResumeOptimizer({
     const [isDownloading, setIsDownloading] = useState<'PDF' | 'DOCX' | null>(null);
     const [includeToneCritique, setIncludeToneCritique] = useState(false);
     const { user } = useUser();
-    const { showToast } = useToast();
+    const { showToast, updateToast } = useToast();
 
     // ── Handlers ────────────────────────────────────────────────────────────
 
     const handleOptimize = async () => {
         setIsOptimizing(true);
+        const toastId = showToast('Optimizing your resume… this can take a little while.', 'loading');
         try {
             const result = await optimizeResume(resumeText, jobDescription, { includeToneCritique });
             if (result.success) {
@@ -245,13 +247,13 @@ export default function ResumeOptimizer({
                 const toastMsg = includeToneCritique
                     ? 'Resume optimized + tone critiqued! 🎉'
                     : 'Resume optimized successfully! 🎉';
-                showToast(toastMsg, 'success', 5000);
+                updateToast(toastId, toastMsg, 'success', 5000);
             } else {
-                showToast('Optimization failed. Please try again.', 'error', 5000);
+                updateToast(toastId, 'We could not optimize your resume. Please try again.', 'error', 5000);
             }
         } catch (error) {
             console.error(error);
-            showToast('Something went wrong. Please try again.', 'error', 5000);
+            updateToast(toastId, 'Something went wrong. Please try again.', 'error', 5000);
         } finally {
             setIsOptimizing(false);
         }
@@ -277,6 +279,13 @@ export default function ResumeOptimizer({
         } finally {
             setIsDownloading(null);
         }
+    };
+
+    const handlePrint = () => {
+        if (!optimizedData) return;
+        // The paper-first resume lives inside the dialog (which is portalled to
+        // <body>), so the print stylesheet can hide the rest of the app.
+        window.print();
     };
 
     const handleSave = async (format: 'PDF' | 'DOCX') => {
@@ -340,7 +349,7 @@ export default function ResumeOptimizer({
                 className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-900 border-2 border-amber-500/30 text-slate-100 shadow-2xl"
                 style={{ backgroundColor: '#0f172a' }}
             >
-                <DialogHeader>
+                <DialogHeader className="print:hidden">
                     <DialogTitle className="text-2xl sm:text-3xl font-display flex items-center gap-3">
                         <motion.div
                             animate={{ rotate: [0, 15, -15, 0] }}
@@ -475,7 +484,7 @@ export default function ResumeOptimizer({
                             key="results"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="space-y-6"
+                            className="space-y-6 print:hidden"
                         >
                             {/* Success Banner */}
                             <motion.div
@@ -628,6 +637,18 @@ export default function ResumeOptimizer({
                                         {isDownloading === 'DOCX' ? <Loader2 className="h-5 w-5 animate-spin" /> : <FileText className="h-5 w-5" />}
                                         Word
                                     </motion.button>
+
+                                    <motion.button
+                                        onClick={handlePrint}
+                                        whileHover={{ scale: 1.05, y: -2 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="cursor-pointer flex items-center gap-2 px-5 py-3 rounded-xl font-semibold
+                                                   border-2 border-slate-600 text-slate-200
+                                                   hover:bg-slate-800/60 transition-all"
+                                    >
+                                        <Printer className="h-5 w-5" />
+                                        Print Resume
+                                    </motion.button>
                                 </div>
 
                                 {/* Save Button */}
@@ -662,6 +683,13 @@ export default function ResumeOptimizer({
                         </motion.div>
                     )}
                 </AnimatePresence>
+
+                {/* Paper-first resume — only rendered when printing */}
+                {optimizedData && (
+                    <div className="hidden print:block">
+                        <PrintableResume data={optimizedData} />
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     );
