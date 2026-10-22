@@ -16,9 +16,18 @@ import { ResumePDF } from './ResumePDF';
 import AdvancedSearch, { SearchFilters } from './AdvancedSearch';
 import { useToast } from './Toast';
 import { BadgeCollection } from './Badges';
+import DashboardStats, { DashboardStatsData } from './DashboardStats';
 import EmptyState, { EmptyStateVariant } from './EmptyState';
 
-export default function DashboardClient({ serverHistory }: { serverHistory: any[] }) {
+const DEFAULT_STATS: DashboardStatsData = {
+    analyzed: 0,
+    optimized: 0,
+    jobsTracked: 0,
+    interviews: 0,
+    streak: 0,
+};
+
+export default function DashboardClient({ serverHistory, stats = DEFAULT_STATS }: { serverHistory: any[]; stats?: DashboardStatsData }) {
     const [history, setHistory] = useState<any[]>([]);
     const [filteredHistory, setFilteredHistory] = useState<any[]>([]);
     const [activeCategory, setActiveCategory] = useState<'all' | 'ANALYZE' | 'OPTIMIZE' | 'TRACKER'>('all');
@@ -325,6 +334,9 @@ export default function DashboardClient({ serverHistory }: { serverHistory: any[
                     {/* Advanced Search */}
                     <AdvancedSearch onSearch={handleSearch} history={history} />
                 </div>
+
+                {/* Quick Stats */}
+                <DashboardStats stats={stats} />
 
                 {/* List */}
                 <div className="grid gap-4">

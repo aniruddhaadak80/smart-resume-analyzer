@@ -1,11 +1,22 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import DashboardClient from "@/components/DashboardClient";
+import { DashboardStatsData } from "@/components/DashboardStats";
+import { calculateActivityStreak } from "@/lib/streak";
 import { redirect } from "next/navigation";
+
+const EMPTY_STATS: DashboardStatsData = {
+    analyzed: 0,
+    optimized: 0,
+    jobsTracked: 0,
+    interviews: 0,
+    streak: 0,
+};
 
 export default async function DashboardPage() {
     const { userId } = await auth();
     let serverHistory: any[] = [];
+    let stats: DashboardStatsData = { ...EMPTY_STATS };
 
     if (userId) {
         try {
@@ -59,10 +70,31 @@ export default async function DashboardPage() {
         } catch (error) {
             console.error("Failed to fetch resumes:", error);
         }
+
+        // Quick stats for the animated counters
+        try {
+            const [analyzed, optimized, jobsTracked, interviews, activityDates] = await Promise.all([
+                prisma.resume.count({ where: { userId, actionType: 'ANALYZE' } }),
+                prisma.resume.count({ where: { userId, actionType: 'OPTIMIZE' } }),
+                prisma.jobApplication.count({ where: { userId } }),
+                prisma.userActivity.count({ where: { userId, actionType: 'COACH' } }),
+                prisma.userActivity.findMany({ where: { userId }, select: { createdAt: true } }),
+            ]);
+
+            stats = {
+                analyzed,
+                optimized,
+                jobsTracked,
+                interviews,
+                streak: calculateActivityStreak(activityDates),
+            };
+        } catch (error) {
+            console.error("Failed to fetch dashboard stats:", error);
+        }
     } else {
         // Optional: Redirect to login or just show local history
         // redirect('/sign-in'); 
     }
 
-    return <DashboardClient serverHistory={serverHistory} />;
+    return <DashboardClient serverHistory={serverHistory} stats={stats} />;
 }
