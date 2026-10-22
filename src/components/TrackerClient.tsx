@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useUser, SignInButton } from '@clerk/nextjs';
 import { useToast } from './Toast';
 import { getApplications, createApplication, updateApplication, deleteApplication, JobApplicationData } from '@/app/actions/tracker';
+import EmptyState from './EmptyState';
 
 // Kanban column definitions
 const COLUMNS = [
@@ -86,7 +87,7 @@ export default function TrackerClient() {
             setShowAddModal(false);
             loadApplications();
         } else {
-            showToast(result.error || 'Failed to add application', 'error');
+            showToast(result.error || 'We could not add this application. Please try again.', 'error');
         }
     };
 
@@ -94,7 +95,9 @@ export default function TrackerClient() {
         const result = await deleteApplication(id);
         if (result.success) {
             setApplications(prev => prev.filter(a => a.id !== id));
-            showToast('Application removed', 'success');
+            showToast('Application removed!', 'success');
+        } else {
+            showToast(result.error || 'We could not remove this application. Please try again.', 'error');
         }
     };
 
@@ -120,7 +123,7 @@ export default function TrackerClient() {
 
         const result = await updateApplication(draggedCard, { status: newStatus });
         if (!result.success) {
-            showToast('Failed to move application', 'error');
+            showToast('We could not move this application. Please try again.', 'error');
             loadApplications(); // Revert
         } else {
             showToast(`Moved to ${COLUMNS.find(c => c.id === newStatus)?.title}`, 'success');
@@ -169,6 +172,14 @@ export default function TrackerClient() {
                     <div className="flex items-center justify-center py-32">
                         <Loader2 className="h-8 w-8 text-violet-400 animate-spin" />
                     </div>
+                ) : applications.length === 0 ? (
+                    <EmptyState
+                        variant="tracker"
+                        title="No applications yet"
+                        description="Track every job you apply to, from wishlist to offer, and never lose track of a role again."
+                        actionLabel="Add your first job"
+                        onAction={() => handleAdd('wishlist')}
+                    />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                         {COLUMNS.map((col) => (

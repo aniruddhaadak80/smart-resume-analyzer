@@ -10,6 +10,7 @@ import { saveAs } from 'file-saver';
 import { pdf } from '@react-pdf/renderer';
 import { ResumePDF } from './ResumePDF';
 import { useState } from 'react';
+import { useToast } from './Toast';
 
 // Skill color palette
 const skillColors = [
@@ -35,6 +36,7 @@ interface Resume {
 
 export default function ResumeDetailClient({ resume }: { resume: Resume }) {
     const [isDownloading, setIsDownloading] = useState<'PDF' | 'DOCX' | null>(null);
+    const { showToast } = useToast();
     const data = resume.content ? JSON.parse(resume.content) : {};
 
     const handleDownload = async (format: 'PDF' | 'DOCX') => {
@@ -48,8 +50,10 @@ export default function ResumeDetailClient({ resume }: { resume: Resume }) {
                 const blob = await generateDocx(data);
                 saveAs(blob, `${fileName}.docx`);
             }
+            showToast(`Your ${format} is downloading!`, 'success');
         } catch (error) {
             console.error('Download error:', error);
+            showToast('We could not create that file. Please try again.', 'error');
         } finally {
             setIsDownloading(null);
         }
