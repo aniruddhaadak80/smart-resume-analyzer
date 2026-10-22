@@ -42,3 +42,6 @@ jobs:
 
     - name: Type Check & Verify Types
       run: npx tsc --noEmit
+
+    - name: Run Unit Tests
+      run: npm test
