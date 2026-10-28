@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -47,7 +47,13 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
-  const [isMounted, setIsMounted] = useState(false);
+  // false during SSR and hydration, true once the client is running.
+  // useSyncExternalStore avoids a setState-inside-effect hydration flag.
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const [newBadges, setNewBadges] = useState<BadgeId[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [jdSummary, setJdSummary] = useState<string[] | null>(null);
@@ -72,10 +78,6 @@ export default function Home() {
   const { isSignedIn, user, isLoaded } = useUser();
   const { showToast, updateToast } = useToast();
   const signInBtnRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const clearResult = () => {
     setResult(null);

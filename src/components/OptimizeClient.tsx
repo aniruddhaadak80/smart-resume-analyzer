@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Sparkles, Loader2, CheckCircle2, Download, Save, FileText, FileType2, Upload, Briefcase, Printer } from 'lucide-react';
 import Link from 'next/link';
@@ -129,11 +129,13 @@ export default function OptimizeClient() {
         }
     };
 
-    // Load effects
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    // false during SSR and hydration, true once the client is running.
+    // useSyncExternalStore avoids a setState-inside-effect hydration flag.
+    const mounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false,
+    );
 
     const handleOptimize = async () => {
         // Auth gate: require sign-in for optimization

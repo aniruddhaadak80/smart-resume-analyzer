@@ -20,6 +20,13 @@ interface Message {
     timestamp: number;
 }
 
+// Built at module scope so the render path never calls Date.now() directly.
+const createMessage = (role: Message['role'], content: string): Message => ({
+    role,
+    content,
+    timestamp: Date.now(),
+});
+
 export default function InterviewCoach({ questions }: InterviewCoachProps) {
     const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
@@ -39,33 +46,13 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isProcessing]);
 
-    // Timer effect for recording limit
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (isRecording) {
-            interval = setInterval(() => {
-                setRecordingTime(prev => {
-                    if (prev >= 29) { // 30s limit - 1s buffer
-                        stopRecording();
-                        return 0;
-                    }
-                    return prev + 1;
-                });
-            }, 1000);
-        } else {
-            setRecordingTime(0);
-        }
-        return () => clearInterval(interval);
-    }, [isRecording]);
-
     const startPractice = (index: number) => {
         setActiveQuestion(index);
         setMessages([
-            {
-                role: 'assistant',
-                content: `Let's practice! Here is the question:\n\n${questions[index].question}\n\nTake a moment to think, then you can type your answer or use the microphone to speak.`,
-                timestamp: Date.now()
-            }
+            createMessage(
+                'assistant',
+                `Let's practice! Here is the question:\n\n${questions[index].question}\n\nTake a moment to think, then you can type your answer or use the microphone to speak.`,
+            ),
         ]);
     };
 
@@ -134,8 +121,8 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
 
         const newMessages = [
             ...messages,
-            { role: 'user', content: text, timestamp: Date.now() }
-        ] as Message[];
+            createMessage('user', text)
+        ];
 
         setMessages(newMessages);
         setInputText('');
@@ -178,12 +165,12 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
                 const content = response.content;
                 setMessages(prev => [
                     ...prev,
-                    { role: 'assistant', content, timestamp: Date.now() }
+                    createMessage('assistant', content)
                 ]);
             } else {
                 setMessages(prev => [
                     ...prev,
-                    { role: 'assistant', content: "Sorry, I couldn't generate a response. Please try again.", timestamp: Date.now() }
+                    createMessage('assistant', "Sorry, I couldn't generate a response. Please try again.")
                 ]);
                 showToast('We could not get a coaching reply. Please try again.', 'error');
             }
@@ -240,7 +227,7 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
                         console.error("Transcription failed", result.error);
                         setMessages(prev => [
                             ...prev,
-                            { role: 'assistant', content: "I had trouble hearing that. Could you try speaking again or typing your answer?", timestamp: Date.now() }
+                            createMessage('assistant', "I had trouble hearing that. Could you try speaking again or typing your answer?")
                         ]);
                         setIsProcessing(false);
                     }
@@ -255,6 +242,7 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
             };
 
             mediaRecorder.start();
+            setRecordingTime(0);
             setIsRecording(true);
         } catch (err) {
             console.error("Error accessing microphone:", err);
@@ -266,8 +254,25 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
         if (mediaRecorderRef.current && isRecording) {
             mediaRecorderRef.current.stop();
             setIsRecording(false);
+            setRecordingTime(0);
         }
     };
+
+    // Timer effect for recording limit
+    useEffect(() => {
+        if (!isRecording) return;
+
+        const startedAt = Date.now();
+        const interval = setInterval(() => {
+            setRecordingTime(Math.min(30, Math.floor((Date.now() - startedAt) / 1000)));
+        }, 1000);
+        const timeout = setTimeout(() => stopRecording(), 30_000);
+
+        return () => {
+            clearInterval(interval);
+            clearTimeout(timeout);
+        };
+    }, [isRecording]);
 
     return (
         <Card className="glass-card border-t-4 border-t-teal-500 w-full">
