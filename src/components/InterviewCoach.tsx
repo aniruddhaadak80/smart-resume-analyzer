@@ -173,9 +173,12 @@ export default function InterviewCoach({ questions }: InterviewCoachProps) {
             const response = await generateCoachResponse(history);
 
             if (response.success && response.content) {
+                // capture the narrowed value: TS does not carry the narrowing of
+                // a property access into the setState updater closure
+                const content = response.content;
                 setMessages(prev => [
                     ...prev,
-                    { role: 'assistant', content: response.content, timestamp: Date.now() }
+                    { role: 'assistant', content, timestamp: Date.now() }
                 ]);
             } else {
                 setMessages(prev => [

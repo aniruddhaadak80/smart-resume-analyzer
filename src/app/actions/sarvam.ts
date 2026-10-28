@@ -1,4 +1,4 @@
-'use server';
+﻿'use server';
 
 import { SarvamAIClient } from 'sarvamai';
 import { auth } from '@clerk/nextjs/server';
@@ -55,7 +55,7 @@ export async function generateCoachResponse(history: { role: 'user' | 'assistant
         // casting history to any to bypass potential SDK type mismatches if they are strict about 'ChatCompletionRequestMessage'
         const response = await client.chat.completions({
             messages: history as any,
-            // model property removed as it caused build error and is not in JS SDK types
+            model: 'sarvam-105b',
         });
 
         return {
