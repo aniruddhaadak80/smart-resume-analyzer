@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
 import { motion } from "framer-motion";
@@ -41,15 +41,15 @@ export default function Navbar() {
                         ✨ Optimize
                     </Link>
 
-                    <SignedOut>
+                    <Show when="signed-out">
                         <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                             <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50">Sign In</Button>
                         </SignInButton>
                         <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                             <Button className="bg-teal-500/10 text-teal-300 border border-teal-500/20 hover:bg-teal-500/20 rounded-full">Get Started</Button>
                         </SignInButton>
-                    </SignedOut>
-                    <SignedIn>
+                    </Show>
+                    <Show when="signed-in">
                         <div className="flex items-center gap-4">
                             <Link href="/tracker" prefetch={true} className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
                                 Tracker
@@ -57,13 +57,13 @@ export default function Navbar() {
                             <Link href="/dashboard" prefetch={true} className="text-sm font-medium text-slate-300 hover:text-white hover:underline underline-offset-4 hidden md:inline-block cursor-pointer">
                                 Dashboard
                             </Link>
-                            <UserButton afterSignOutUrl="/" appearance={{
+                            <UserButton appearance={{
                                 elements: {
                                     avatarBox: "w-10 h-10 ring-2 ring-teal-500/20"
                                 }
                             }} />
                         </div>
-                    </SignedIn>
+                    </Show>
                 </div>
             </div>
         </header>
