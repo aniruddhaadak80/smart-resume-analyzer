@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
 import { motion } from "framer-motion";
+import { GithubIcon } from "@/components/BrandIcons";
 import Image from "next/image";
 
 export default function Navbar() {
@@ -30,7 +30,7 @@ export default function Navbar() {
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 animate-gradient-xy opacity-70 blur-md group-hover:opacity-100 transition-opacity"></div>
                             <div className="relative flex items-center px-4 py-2 bg-slate-950 rounded-full transition-all ease-in duration-75 group-hover:bg-slate-900">
-                                <Github className="w-4 h-4 mr-2 text-white group-hover:text-teal-400 transition-colors" />
+                                <GithubIcon className="w-4 h-4 mr-2 text-white group-hover:text-teal-400 transition-colors" />
                                 <span className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent font-bold group-hover:from-teal-300 group-hover:to-cyan-300">Star on GitHub</span>
                             </div>
                         </a>

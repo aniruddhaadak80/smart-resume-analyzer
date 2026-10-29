@@ -1,6 +1,7 @@
 'use client';
 
-import { Github, Twitter, Linkedin, Globe, Mail, Code2, Cpu, Send, Link as LinkIcon } from "lucide-react";
+import { Globe, Mail, Code2, Cpu, Send, Link as LinkIcon } from "lucide-react";
+import { GithubIcon, TwitterIcon, LinkedinIcon } from "@/components/BrandIcons";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -20,9 +21,9 @@ export default function Footer() {
 
                 {/* Center: Social Icons */}
                 <div className="flex flex-wrap justify-center gap-6 text-slate-500">
-                    <a href="https://www.linkedin.com/in/aniruddha-adak" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="cursor-pointer"><Linkedin className="h-5 w-5 hover:text-white transition-colors" /></a>
-                    <a href="https://github.com/aniruddhaadak80" target="_blank" rel="noopener noreferrer" title="GitHub" className="cursor-pointer"><Github className="h-5 w-5 hover:text-white transition-colors" /></a>
-                    <a href="https://x.com/aniruddhadak" target="_blank" rel="noopener noreferrer" title="Twitter / X" className="cursor-pointer"><Twitter className="h-5 w-5 hover:text-white transition-colors" /></a>
+                    <a href="https://www.linkedin.com/in/aniruddha-adak" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="cursor-pointer"><LinkedinIcon className="h-5 w-5 hover:text-white transition-colors" /></a>
+                    <a href="https://github.com/aniruddhaadak80" target="_blank" rel="noopener noreferrer" title="GitHub" className="cursor-pointer"><GithubIcon className="h-5 w-5 hover:text-white transition-colors" /></a>
+                    <a href="https://x.com/aniruddhadak" target="_blank" rel="noopener noreferrer" title="Twitter / X" className="cursor-pointer"><TwitterIcon className="h-5 w-5 hover:text-white transition-colors" /></a>
                     <a href="https://dev.to/aniruddhaadak" target="_blank" rel="noopener noreferrer" title="Dev Profile" className="cursor-pointer"><Code2 className="h-5 w-5 hover:text-white transition-colors" /></a>
                     <a href="https://codepen.io/aniruddhaadak" target="_blank" rel="noopener noreferrer" title="CodePen" className="cursor-pointer"><Cpu className="h-5 w-5 hover:text-white transition-colors" /></a>
                     <a href="https://aniruddha-adak.vercel.app" target="_blank" rel="noopener noreferrer" title="Portfolio" className="cursor-pointer"><Globe className="h-5 w-5 hover:text-white transition-colors" /></a>

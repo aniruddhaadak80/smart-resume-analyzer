@@ -2,7 +2,6 @@ import {
     Mail,
     Phone,
     Globe,
-    Linkedin,
     MapPin,
     Briefcase,
     GraduationCap,
@@ -12,6 +11,7 @@ import {
     Languages,
     Trophy,
 } from 'lucide-react';
+import { LinkedinIcon } from '@/components/BrandIcons';
 
 /**
  * A clean, paper-first rendering of a resume.
@@ -82,7 +82,7 @@ export default function PrintableResume({ data }: { data: ResumeData | null | un
         contact.email && { icon: <Mail className="h-3 w-3" />, value: contact.email },
         contact.phone && { icon: <Phone className="h-3 w-3" />, value: contact.phone },
         contact.location && { icon: <MapPin className="h-3 w-3" />, value: contact.location },
-        contact.linkedin && { icon: <Linkedin className="h-3 w-3" />, value: contact.linkedin },
+        contact.linkedin && { icon: <LinkedinIcon className="h-3 w-3" />, value: contact.linkedin },
         contact.website && { icon: <Globe className="h-3 w-3" />, value: contact.website },
     ].filter(Boolean) as Array<{ icon: React.ReactNode; value: string }>;
 
