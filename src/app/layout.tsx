@@ -36,12 +36,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${outfit.variable} ${spaceGrotesk.variable} font-sans antialiased bg-slate-950 text-slate-50`}
-          suppressHydrationWarning
-        >
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${outfit.variable} ${spaceGrotesk.variable} font-sans antialiased bg-slate-950 text-slate-50`}
+        suppressHydrationWarning
+      >
+        <ClerkProvider afterSignOutUrl="/">
           <ToastProvider>
             <div className="flex flex-col min-h-screen">
               <ClientOnly>
@@ -56,8 +56,8 @@ export default function RootLayout({
               </ClientOnly>
             </div>
           </ToastProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
