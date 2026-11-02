@@ -27,7 +27,7 @@
     "clsx": "^2.1.1",
     "docx": "^9.12.0",
     "file-saver": "^2.0.5",
-    "framer-motion": "^12.35.1",
+    "framer-motion": "^14.8.0",
     "gsap": "^3.14.2",
     "lucide-react": "^0.563.0",
     "mammoth": "^1.13.0",
