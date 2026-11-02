@@ -109,5 +109,8 @@ updates:
     update-types:
     - version-update:semver-major
   - dependency-name: lucide-react
+  - dependency-name: framer-motion
+    update-types:
+    - version-update:semver-major
     update-types:
     - version-update:semver-major
