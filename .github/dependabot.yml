@@ -102,3 +102,12 @@ updates:
   - dependency-name: '@eslint/js'
     update-types:
     - version-update:semver-major
+  - dependency-name: openai
+    update-types:
+    - version-update:semver-major
+  - dependency-name: '@clerk/nextjs'
+    update-types:
+    - version-update:semver-major
+  - dependency-name: lucide-react
+    update-types:
+    - version-update:semver-major
